@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UGC Studio · Algris Márquez</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --purple:#6B2D8B;--purple-light:#F8F3FC;--purple-mid:#9B59B6;--purple-dark:#4A1A62;
+  --navy:#1A0A2E;--gold:#C9943A;--gold-light:#FBF7EE;--cream:#FAFAF8;--white:#fff;
+  --text:#1A0A2E;--muted:#8A7A9A;--border:rgba(107,45,139,0.1);--border-soft:rgba(107,45,139,0.06);
+  --radius:18px;--font-serif:'Cormorant Garamond',serif;--font-sans:'Outfit',sans-serif;
+  --grad-purple:linear-gradient(135deg,#4A1A62,#6B2D8B,#9B59B6);
+  --grad-gold:linear-gradient(135deg,#C9943A,#E8B84B);
+  --grad-text:linear-gradient(135deg,#6B2D8B,#C9943A);
+  --shadow-sm:0 2px 12px rgba(107,45,139,0.06);
+  --shadow-md:0 8px 32px rgba(107,45,139,0.1);
+  --shadow-lg:0 16px 48px rgba(107,45,139,0.15);
+}
+body{font-family:var(--font-sans);color:var(--text);background:var(--cream);min-height:100vh}
+.app{max-width:720px;margin:0 auto;padding:0 1rem 5rem}
+
+/* HEADER */
+.header{background:#fff;padding:2.5rem 2rem 2rem;border-radius:0 0 28px 28px;margin-bottom:1.5rem;position:relative;overflow:hidden;box-shadow:var(--shadow-md)}
+.header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#4A1A62,#6B2D8B,#C9943A,#6B2D8B,#4A1A62)}
+.header::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(107,45,139,0.05),transparent 70%)}
+.brand-tag{display:inline-flex;align-items:center;gap:6px;background:var(--purple-light);border:1px solid rgba(107,45,139,0.15);border-radius:100px;padding:5px 14px;font-size:10px;font-weight:600;color:var(--purple);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}
+.gem{width:5px;height:5px;background:var(--gold);border-radius:50%}
+.header h1{font-family:var(--font-serif);font-size:38px;font-weight:700;color:var(--navy);line-height:1.05;margin-bottom:8px;position:relative;z-index:1}
+.header h1 em{font-style:normal;background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header p{font-size:13px;color:var(--muted);font-weight:300;position:relative;z-index:1}
+
+/* USER BAR */
+.user-bar{display:none;background:#fff;border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin-bottom:1rem;justify-content:space-between;align-items:center;box-shadow:var(--shadow-sm)}
+.user-bar.visible{display:flex}
+.user-info{font-size:12.5px;color:var(--muted)}
+.user-info strong{color:var(--purple);font-weight:600}
+.user-right{display:flex;align-items:center;gap:10px}
+.plan-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:600;background:var(--purple-light);color:var(--purple);border:1px solid rgba(107,45,139,0.15)}
+.plan-badge.plan-inicial{background:#EEF7EE;color:#2D6B2D;border-color:rgba(45,107,45,0.2)}
+.plan-badge.plan-premium{background:var(--gold-light);color:#7A5520;border-color:rgba(201,148,58,0.25)}
+.logout-btn{font-size:12px;color:var(--muted);cursor:pointer;background:none;border:none;font-family:var(--font-sans);text-decoration:underline}
+.logout-btn:hover{color:var(--purple)}
+
+/* USAGE BAR */
+.usage-bar{display:none;background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:1rem;box-shadow:var(--shadow-sm)}
+.usage-bar.visible{display:block}
+.usage-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.usage-label{font-size:12px;color:var(--muted);font-weight:500}
+.usage-count{font-family:var(--font-serif);font-size:14px;font-weight:700;color:var(--purple-dark)}
+.usage-track{height:5px;background:rgba(107,45,139,0.08);border-radius:100px;overflow:hidden}
+.usage-fill{height:100%;border-radius:100px;background:var(--grad-purple);transition:width 0.5s ease}
+.usage-fill.warning{background:linear-gradient(135deg,#C9943A,#E8B84B)}
+.usage-fill.danger{background:linear-gradient(135deg,#E24B4A,#FF6B6B)}
+
+/* CARDS */
+.steps{display:flex;flex-direction:column;gap:1rem}
+.card{background:#fff;border:1px solid rgba(107,45,139,0.08);border-radius:var(--radius);overflow:hidden;transition:all 0.25s;box-shadow:var(--shadow-sm)}
+.card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.card-header{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid rgba(107,45,139,0.06);background:linear-gradient(135deg,#FAFAF8,#F8F3FC)}
+.step-num{width:26px;height:26px;background:var(--grad-purple);color:#fff;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(107,45,139,0.3)}
+.card-title{font-family:var(--font-serif);font-size:16px;font-weight:700;color:var(--navy)}
+.card-body{padding:20px}
+
+/* UPLOAD */
+.upload-zone{border:1.5px dashed rgba(107,45,139,0.2);border-radius:14px;padding:32px 20px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--purple-light);position:relative}
+.upload-zone:hover{border-color:var(--purple);background:#F0E8F7}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-icon{font-size:28px;margin-bottom:10px}
+.upload-text{font-size:13px;color:var(--muted);line-height:1.6}
+.upload-text strong{color:var(--purple);font-weight:600}
+.preview-img{width:100%;max-height:200px;object-fit:contain;border-radius:10px;border:1px solid var(--border);box-shadow:var(--shadow-sm)}
+.change-img{display:inline-block;margin-top:8px;font-size:12px;color:var(--purple);cursor:pointer;border-bottom:1px solid rgba(107,45,139,0.3)}
+
+/* PARAMS */
+.param-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.full{grid-column:1/-1}
+.param-label{display:block;font-size:10.5px;font-weight:600;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px}
+.pills{display:flex;flex-wrap:wrap;gap:7px}
+.pill{padding:7px 15px;border-radius:100px;border:1px solid rgba(107,45,139,0.12);background:#fff;font-size:12.5px;cursor:pointer;transition:all 0.18s;font-family:var(--font-sans);color:var(--text);box-shadow:0 1px 4px rgba(107,45,139,0.04)}
+.pill:hover{border-color:var(--purple);color:var(--purple)}
+.pill.active,.pill.multi-active{background:var(--grad-purple);color:#fff;border-color:transparent;box-shadow:0 3px 12px rgba(107,45,139,0.25)}
+.counter-row{display:flex;align-items:center;gap:14px;margin-top:2px}
+.counter-btn{width:32px;height:32px;border-radius:50%;border:1px solid rgba(107,45,139,0.15);background:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.18s;color:var(--purple);box-shadow:var(--shadow-sm)}
+.counter-btn:hover{background:var(--grad-purple);color:#fff;border-color:transparent}
+.counter-val{font-family:var(--font-serif);font-size:26px;font-weight:700;color:var(--purple-dark);min-width:28px;text-align:center}
+input[type="text"],input[type="email"],input[type="password"]{width:100%;padding:10px 14px;border:1px solid rgba(107,45,139,0.12);border-radius:10px;font-family:var(--font-sans);font-size:13.5px;background:var(--cream);color:var(--text);outline:none;transition:all 0.18s}
+input[type="text"]:focus,input[type="email"]:focus,input[type="password"]:focus{border-color:var(--purple);background:#fff;box-shadow:0 0 0 3px rgba(107,45,139,0.06)}
+input::placeholder{color:var(--muted)}
+.subparam{margin-top:14px;padding-top:14px;border-top:1px dashed rgba(107,45,139,0.1);display:none}
+.subparam.visible{display:block}
+.story-info{background:var(--purple-light);border-radius:10px;padding:10px 14px;font-size:12.5px;color:var(--purple-dark);border:1px solid rgba(107,45,139,0.1)}
+.multi-note{background:var(--gold-light);border:1px solid rgba(201,148,58,0.2);border-radius:10px;padding:9px 14px;font-size:12px;color:#7A5520;margin-bottom:10px;display:none}
+.multi-note.visible{display:block}
+.hint{font-size:11px;color:var(--muted);margin-top:6px;font-style:italic}
+
+/* BUTTONS */
+.btn-row{display:flex;gap:10px;margin-top:1.5rem}
+.gen-btn{flex:1;padding:16px;background:var(--grad-purple);color:#fff;border:none;border-radius:14px;font-family:var(--font-serif);font-size:18px;font-weight:600;cursor:pointer;transition:all 0.22s;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 24px rgba(107,45,139,0.3)}
+.gen-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(107,45,139,0.4)}
+.gen-btn:active{transform:translateY(0)}
+.gen-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;box-shadow:none}
+.reset-btn{padding:16px 18px;background:#fff;color:var(--muted);border:1px solid rgba(107,45,139,0.12);border-radius:14px;font-family:var(--font-sans);font-size:14px;cursor:pointer;transition:all 0.18s;display:flex;align-items:center;gap:6px;white-space:nowrap;box-shadow:var(--shadow-sm)}
+.reset-btn:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-light)}
+.error-msg{background:#FFF0F0;border:1px solid #E24B4A;color:#A32D2D;border-radius:8px;padding:10px 14px;font-size:13px;margin-top:10px;display:none}
+.error-msg.visible{display:block}
+
+/* RESULT */
+.result-card{background:#fff;border:1px solid rgba(107,45,139,0.08);border-radius:var(--radius);overflow:hidden;display:none;margin-top:1.25rem;box-shadow:var(--shadow-md)}
+.result-card.visible{display:block;animation:fadeUp 0.35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.result-top{padding:14px 20px;border-bottom:1px solid rgba(107,45,139,0.06);background:linear-gradient(135deg,#FBF7EE,#F8F3FC);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.result-label{font-family:var(--font-serif);font-size:16px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px}
+.gem-gold{width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.result-actions{display:flex;gap:8px}
+.action-btn{font-size:11.5px;padding:6px 14px;border-radius:8px;cursor:pointer;font-family:var(--font-sans);font-weight:500;transition:all 0.18s}
+.copy-btn{border:1px solid rgba(201,148,58,0.3);background:rgba(201,148,58,0.08);color:var(--gold)}
+.copy-btn:hover{background:var(--gold);color:#fff}
+.pdf-btn{border:1px solid rgba(107,45,139,0.2);background:rgba(107,45,139,0.06);color:var(--purple)}
+.pdf-btn:hover{background:var(--grad-purple);color:#fff}
+.result-body{padding:22px 20px}
+
+/* BRIEF RENDERED */
+.brief-rendered{font-size:14px;line-height:1.85;color:var(--text)}
+.b-section{margin-bottom:1.5rem}
+.b-section:last-child{margin-bottom:0}
+.b-title{display:flex;align-items:center;gap:8px;font-family:var(--font-serif);font-size:16px;font-weight:700;color:var(--navy);margin-bottom:12px;padding:10px 14px;background:linear-gradient(135deg,#F8F3FC,#FBF7EE);border-radius:10px;border-left:3px solid var(--purple)}
+.b-title .ico{font-size:14px}
+.b-piece{background:var(--cream);border:1px solid var(--border);border-radius:10px;border-left:3px solid var(--purple-mid);padding:13px 15px;margin-bottom:9px}
+.b-piece-label{font-family:var(--font-serif);font-size:13px;font-weight:700;color:var(--purple-dark);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.4px}
+.b-piece ul{list-style:none;padding:0;margin:0}
+.b-piece ul li{font-size:13px;padding:4px 0 4px 18px;position:relative;border-bottom:1px solid var(--border-soft);line-height:1.6}
+.b-piece ul li:last-child{border-bottom:none}
+.b-piece ul li::before{content:'→';position:absolute;left:0;color:var(--purple-mid);font-size:11px;top:6px}
+.b-hook{background:linear-gradient(135deg,#FAFAF8,#F8F3FC);border:1px solid rgba(107,45,139,0.08);border-radius:10px;padding:10px 14px 10px 36px;margin-bottom:7px;font-size:13.5px;position:relative;box-shadow:0 1px 4px rgba(107,45,139,0.04)}
+.b-hook:hover{box-shadow:0 3px 12px rgba(107,45,139,0.08)}
+.b-hook-num{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:18px;height:18px;background:var(--grad-purple);color:#fff;border-radius:50%;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(107,45,139,0.25)}
+.b-arte-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.b-arte-card{background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:13px 14px;transition:box-shadow 0.15s}
+.b-arte-card:hover{box-shadow:0 3px 12px rgba(107,45,139,0.08)}
+.b-arte-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--purple);margin-bottom:7px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:5px}
+.b-arte-body{font-size:13px;color:var(--text);line-height:1.7}
+.b-ul{list-style:none;padding:0;margin:4px 0}
+.b-ul li{padding:4px 0 4px 18px;position:relative;font-size:13.5px;border-bottom:1px solid var(--border-soft)}
+.b-ul li:last-child{border-bottom:none}
+.b-ul li::before{content:'•';position:absolute;left:4px;color:var(--purple);font-weight:700}
+.b-p{margin-bottom:6px;font-size:13.5px}
+
+/* LOADING */
+.loading-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;padding:2.5rem}
+.loading-dots{display:flex;gap:8px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--purple);animation:bounce 1s infinite}
+.dot:nth-child(2){animation-delay:.15s}
+.dot:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,100%{transform:translateY(0);opacity:.3}50%{transform:translateY(-9px);opacity:1}}
+.loading-text{font-size:13px;color:var(--muted);font-style:italic;text-align:center}
+
+/* AUTH OVERLAY */
+.overlay{position:fixed;inset:0;z-index:1000;background:rgba(26,10,46,0.75);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:1rem;animation:fadeUp 0.3s ease}
+.overlay.hidden{display:none}
+.overlay-box{background:#fff;border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:400px;box-shadow:var(--shadow-lg)}
+.overlay-box h2{font-family:var(--font-serif);font-size:28px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.overlay-box h2 em{font-style:normal;background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.overlay-box p{font-size:13px;color:var(--muted);margin-bottom:1.5rem;line-height:1.6}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px}
+.submit-btn{width:100%;padding:14px;margin-top:6px;background:var(--grad-purple);color:#fff;border:none;border-radius:12px;font-family:var(--font-serif);font-size:17px;font-weight:600;cursor:pointer;transition:all 0.2s;box-shadow:0 6px 20px rgba(107,45,139,0.3)}
+.submit-btn:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(107,45,139,0.4)}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.toggle-link{text-align:center;margin-top:14px;font-size:13px;color:var(--muted)}
+.toggle-link span{color:var(--purple);cursor:pointer;font-weight:600;text-decoration:underline}
+.auth-err{background:#FFF0F0;border:1px solid #E24B4A;color:#A32D2D;border-radius:8px;padding:9px 13px;font-size:13px;margin-top:8px;display:none}
+.auth-err.visible{display:block}
+
+/* PLANS MODAL */
+.plans-box{background:#fff;border-radius:24px;padding:2rem 1.75rem;width:100%;max-width:500px;box-shadow:var(--shadow-lg);text-align:center}
+.plans-box h3{font-family:var(--font-serif);font-size:24px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.plans-box>p{font-size:13px;color:var(--muted);margin-bottom:1.25rem;line-height:1.6}
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.plan-card{background:var(--cream);border:1px solid rgba(107,45,139,0.1);border-radius:14px;padding:16px 10px;position:relative}
+.plan-card.hot{background:var(--purple-light);border-color:rgba(107,45,139,0.3);box-shadow:0 4px 16px rgba(107,45,139,0.1)}
+.plan-tag{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--grad-purple);color:#fff;font-size:9px;font-weight:700;padding:3px 10px;border-radius:100px;white-space:nowrap;letter-spacing:0.5px}
+.plan-name{font-family:var(--font-serif);font-size:14px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.plan-price{font-family:var(--font-serif);font-size:22px;font-weight:700;color:var(--purple);margin-bottom:5px}
+.plan-price small{font-size:11px;color:var(--muted);font-family:var(--font-sans)}
+.plan-desc{font-size:10.5px;color:var(--muted);line-height:1.6;margin-bottom:10px}
+.plan-cta{width:100%;padding:8px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.18s;font-family:var(--font-sans)}
+.plan-cta.solid{background:var(--grad-purple);color:#fff;box-shadow:0 3px 10px rgba(107,45,139,0.25)}
+.plan-cta.solid:hover{transform:translateY(-1px)}
+.plan-cta.outline{background:#fff;color:var(--purple);border:1px solid rgba(107,45,139,0.25)}
+.plan-cta.outline:hover{background:var(--grad-purple);color:#fff}
+.plans-dismiss{font-size:12px;color:var(--muted);cursor:pointer;background:none;border:none;font-family:var(--font-sans);text-decoration:underline;margin-top:4px}
+
+/* FEEDBACK MODAL */
+.feedback-box{background:#fff;border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:420px;box-shadow:var(--shadow-lg)}
+.feedback-box h3{font-family:var(--font-serif);font-size:24px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.feedback-box>p{font-size:13px;color:var(--muted);margin-bottom:1.25rem;line-height:1.6}
+.stars{display:flex;gap:8px;margin-bottom:1.25rem}
+.star{font-size:28px;cursor:pointer;opacity:0.3;transition:all 0.15s;user-select:none}
+.star.on{opacity:1;transform:scale(1.1)}
+.feedback-box textarea{width:100%;padding:10px 14px;border:1px solid rgba(107,45,139,0.15);border-radius:10px;font-family:var(--font-sans);font-size:13.5px;background:var(--cream);color:var(--text);outline:none;resize:none;height:90px;transition:all 0.18s}
+.feedback-box textarea:focus{border-color:var(--purple);background:#fff}
+
+/* FOOTER */
+.footer{text-align:center;padding:3rem 1rem 0;font-size:11px;color:var(--muted);line-height:1.8}
+.footer-line{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:0 auto 12px}
+.footer strong{background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:600}
+
+@media(max-width:520px){
+  .header h1{font-size:30px}
+  .param-grid{grid-template-columns:1fr}
+  .full{grid-column:1}
+  .btn-row{flex-direction:column}
+  .plan-grid{grid-template-columns:1fr}
+  .b-arte-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH OVERLAY -->
+<div class="overlay hidden" id="authOverlay">
+  <div class="overlay-box">
+    <h2 id="authTitle">Tu <em>Estudio</em> UGC</h2>
+    <p id="authSub">Creá tu cuenta gratis y empezá a generar briefs creativos al instante.</p>
+    <div class="field"><label>Email</label><input type="email" id="authEmail" placeholder="tu@email.com"></div>
+    <div class="field"><label>Contraseña</label><input type="password" id="authPass" placeholder="mínimo 6 caracteres"></div>
+    <button class="submit-btn" id="authBtn">Crear cuenta gratis</button>
+    <div class="auth-err" id="authErr"></div>
+    <div class="toggle-link">¿Ya tenés cuenta? <span id="authToggle">Iniciar sesión</span></div>
+  </div>
+</div>
+
+<!-- PLANS OVERLAY -->
+<div class="overlay hidden" id="plansOverlay">
+  <div class="plans-box">
+    <h3>Elegí tu plan ✦</h3>
+    <p id="plansMsg">Para seguir generando briefs, elegí el plan que mejor se adapta a vos.</p>
+    <div class="plan-grid">
+      <div class="plan-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">$0</div>
+        <div class="plan-desc">2 briefs / mes<br>Reels y Fotos</div>
+      </div>
+      <div class="plan-card hot">
+        <div class="plan-tag">Popular</div>
+        <div class="plan-name">Inicial</div>
+        <div class="plan-price">$9<small>/mes</small></div>
+        <div class="plan-desc">12 briefs / mes<br>Todos los formatos</div>
+        <button class="plan-cta solid" onclick="alert('Próximamente con Stripe. Escribile a Algris Márquez.')">Elegir Inicial</button>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">Premium</div>
+        <div class="plan-price">$21<small>/mes</small></div>
+        <div class="plan-desc">Ilimitado<br>Todo desbloqueado</div>
+        <button class="plan-cta outline" onclick="alert('Próximamente con Stripe. Escribile a Algris Márquez.')">Elegir Premium</button>
+      </div>
+    </div>
+    <button class="plans-dismiss" id="plansDismiss">Cerrar</button>
+  </div>
+</div>
+
+<!-- FEEDBACK OVERLAY -->
+<div class="overlay hidden" id="feedbackOverlay">
+  <div class="feedback-box">
+    <h3>¿Cómo te está yendo? 🌟</h3>
+    <p>Antes de tu próximo brief, contanos tu experiencia. Tu opinión mejora la herramienta.</p>
+    <div class="stars" id="starsRow">
+      <span class="star" data-v="1">⭐</span><span class="star" data-v="2">⭐</span>
+      <span class="star" data-v="3">⭐</span><span class="star" data-v="4">⭐</span>
+      <span class="star" data-v="5">⭐</span>
+    </div>
+    <textarea id="fbComment" placeholder="Contanos qué te gustó, qué mejorarías..."></textarea>
+    <button class="submit-btn" id="fbSubmit" style="margin-top:12px">Enviar y generar brief</button>
+  </div>
+</div>
+
+<div class="app">
+
+  <!-- USER BAR -->
+  <div class="user-bar" id="userBar">
+    <div class="user-info">Hola, <strong id="userEmail"></strong></div>
+    <div class="user-right">
+      <span class="plan-badge" id="planBadge">✦ Free</span>
+      <button class="logout-btn" id="logoutBtn">Salir</button>
+    </div>
+  </div>
+
+  <!-- USAGE BAR -->
+  <div class="usage-bar" id="usageBar">
+    <div class="usage-top">
+      <span class="usage-label">Briefs este mes</span>
+      <span class="usage-count" id="usageCount">0 / 2</span>
+    </div>
+    <div class="usage-track"><div class="usage-fill" id="usageFill" style="width:0%"></div></div>
+  </div>
+
+  <div class="header">
+    <div class="brand-tag"><div class="gem"></div>Algris Márquez · UGC Consulting</div>
+    <h1>Tu <em>Estudio</em><br>Creativo UGC</h1>
+    <p>Subí el producto, configurá tu contenido y recibí un brief listo para producir.</p>
+  </div>
+
+  <div class="steps">
+
+    <!-- PASO 1 -->
+    <div class="card">
+      <div class="card-header"><div class="step-num">1</div><span class="card-title">Imagen del producto</span></div>
+      <div class="card-body">
+        <div class="upload-zone" id="uploadZone">
+          <input type="file" id="fileInput" accept="image/*">
+          <div id="uploadPrompt"><div class="upload-icon">📸</div>
+            <div class="upload-text">Arrastrá o <strong>hacé clic</strong> para subir la imagen<br><span style="font-size:11px;opacity:0.7">JPG, PNG o WEBP</span></div>
+          </div>
+          <img id="previewImg" class="preview-img" style="display:none">
+        </div>
+        <div id="changeWrap" style="text-align:center;display:none"><span class="change-img" id="changeImg">Cambiar imagen</span></div>
+      </div>
+    </div>
+
+    <!-- PASO 2 -->
+    <div class="card">
+      <div class="card-header"><div class="step-num">2</div><span class="card-title" id="step2Title">Tipo de contenido</span></div>
+      <div class="card-body">
+        <div class="param-grid">
+          <div class="full">
+            <span class="param-label">Formato</span>
+            <div class="pills" id="tipoPills">
+              <button class="pill active" data-val="Reel / Video corto" data-type="video">⚡ Reel</button>
+              <button class="pill" data-val="Fotos estáticas" data-type="foto">📷 Fotos</button>
+              <button class="pill" data-val="Carrusel" data-type="carrusel">🎠 Carrusel</button>
+              <button class="pill" data-val="Story" data-type="story">📱 Story</button>
+            </div>
+          </div>
+          <div class="full subparam visible" id="subVideo">
+            <span class="param-label">Duración</span>
+            <div class="pills" id="durPills">
+              <button class="pill active" data-val="15 segundos">15s</button>
+              <button class="pill" data-val="30 segundos">30s</button>
+              <button class="pill" data-val="60 segundos">60s</button>
+            </div>
+          </div>
+          <div class="full subparam" id="subFoto">
+            <span class="param-label">Cantidad de fotos</span>
+            <div class="pills" id="fotoPills">
+              <button class="pill active" data-val="3 fotos">3 fotos</button>
+              <button class="pill" data-val="5 fotos">5 fotos</button>
+              <button class="pill" data-val="8 fotos">8 fotos</button>
+            </div>
+          </div>
+          <div class="full subparam" id="subCarrusel">
+            <span class="param-label">Diapositivas</span>
+            <div class="pills" id="slidePills">
+              <button class="pill active" data-val="5 diapositivas">5 slides</button>
+              <button class="pill" data-val="7 diapositivas">7 slides</button>
+              <button class="pill" data-val="10 diapositivas">10 slides</button>
+            </div>
+          </div>
+          <div class="full subparam" id="subStory">
+            <div class="story-info">📱 <strong>Story:</strong> máximo 15 segundos · Formato vertical 9:16</div>
+          </div>
+          <div>
+            <span class="param-label">Cantidad de piezas</span>
+            <div class="counter-row">
+              <button class="counter-btn" id="minusBtn">−</button>
+              <span class="counter-val" id="cantVal">1</span>
+              <button class="counter-btn" id="plusBtn">+</button>
+            </div>
+          </div>
+          <div>
+            <span class="param-label">Brief para (cliente)</span>
+            <input type="text" id="cliente" placeholder="ej: Marca Glow, Laura Torres…">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASO 3 -->
+    <div class="card">
+      <div class="card-header"><div class="step-num">3</div><span class="card-title" id="step3Title">Objetivo y plataforma</span></div>
+      <div class="card-body">
+        <div class="param-grid">
+          <div>
+            <span class="param-label">Objetivo</span>
+            <div class="pills" id="finPills">
+              <button class="pill active" data-val="orgánico (engagement y comunidad)">🌱 Orgánico</button>
+              <button class="pill" data-val="publicidad paga (conversión y ventas)">🎯 Publicidad</button>
+            </div>
+          </div>
+          <div id="platWrap">
+            <span class="param-label" id="platLabel">Plataforma</span>
+            <div class="pills" id="platPills">
+              <button class="pill active" data-val="Instagram">Instagram</button>
+              <button class="pill" data-val="TikTok">TikTok</button>
+              <button class="pill" data-val="Facebook">Facebook</button>
+              <button class="pill" data-val="YouTube Shorts">YT Shorts</button>
+            </div>
+            <div class="pills" id="formatoPills" style="display:none">
+              <button class="pill active" data-val="9:16 vertical">📱 9:16</button>
+              <button class="pill" data-val="1:1 cuadrado">⬜ Cuadrado</button>
+              <button class="pill" data-val="4:5 retrato">🖼 4:5</button>
+              <button class="pill" data-val="16:9 banner">🖥 Banner</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASO 4 -->
+    <div class="card">
+      <div class="card-header"><div class="step-num">4</div><span class="card-title">Estilo y contexto</span></div>
+      <div class="card-body">
+        <div class="param-grid">
+          <div class="full">
+            <span class="param-label">Estilo UGC</span>
+            <div class="multi-note" id="multiNote">✨ Seleccioná un estilo por pieza</div>
+            <div class="pills" id="estiloPills" style="margin-top:6px">
+              <button class="pill active" data-val="UGC auténtico (casual, sin filtros, primera persona)">🙌 Auténtico</button>
+              <button class="pill" data-val="Lifestyle (aspiracional, cotidiano pero cuidado)">✨ Lifestyle</button>
+              <button class="pill" data-val="Editorial (estético, curado, muy visual)">🎨 Editorial</button>
+              <button class="pill" data-val="Testimonial (review honesta a cámara)">🎤 Testimonial</button>
+              <button class="pill" data-val="Tutorial / Educativo">📚 Tutorial</button>
+              <button class="pill" data-val="Unboxing / Reveal">📦 Unboxing</button>
+            </div>
+            <div class="hint" id="estiloHint">Seleccioná un estilo</div>
+          </div>
+          <div class="full"><span class="param-label">Descripción del producto</span><input type="text" id="producto" placeholder="ej: sérum vitamina C con retinol, 30ml"></div>
+          <div class="full"><span class="param-label">Público objetivo (opcional)</span><input type="text" id="publico" placeholder="ej: mujeres 25-40, mamás millennials"></div>
+          <div class="full"><span class="param-label">Qué evitar o incluir (opcional)</span><input type="text" id="extras" placeholder="ej: evitar mostrar precio, incluir antes/después"></div>
+        </div>
+        <div class="btn-row">
+          <button class="gen-btn" id="genBtn">✦ Generar brief creativo</button>
+          <button class="reset-btn" id="resetBtn">↺ Nueva</button>
+        </div>
+        <div class="error-msg" id="errMsg"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-card" id="resultCard">
+    <div class="result-top">
+      <span class="result-label"><div class="gem-gold"></div>Brief creativo listo</span>
+      <div class="result-actions">
+        <button class="action-btn copy-btn" id="copyBtn">Copiar</button>
+        <button class="action-btn pdf-btn" id="pdfBtn">⬇ PDF</button>
+      </div>
+    </div>
+    <div class="result-body">
+      <div class="loading-wrap" id="loadingWrap">
+        <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div class="loading-text" id="loadingText">Analizando el producto…</div>
+      </div>
+      <div class="brief-rendered" id="briefEl" style="display:none"></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-line"></div>
+    Creado por <strong>Algris Márquez</strong> · UGC Consulting<br>
+    <span style="font-size:10px;opacity:0.5">© 2025 · Todos los derechos reservados</span>
+  </div>
+
+</div>
+
+<script>
+// ── CONFIG ──
+const SUPABASE_URL = 'https://jsfrawzabaeempasajbd.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZnJhd3phYmFlZW1wYXNhamJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NDY5NDgsImV4cCI6MjA5NDQyMjk0OH0.NOqElNFu2rCtnpRd7kr05rbNlBzFkT1FsXK4L5XsgeI';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// ── STATE ──
+let imgBase64 = null, imgType = 'image/jpeg', cantidad = 1, tipoType = 'video';
+let multiStyle = false, briefRaw = '', currentUser = null, userStatus = null;
+let pendingFeedback = false, pendingPayload = null, selStars = 0;
+
+// ── SUPABASE AUTH INIT ──
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) await onLogin(session.user);
+  else showAuth();
+})();
+
+function showAuth() { document.getElementById('authOverlay').classList.remove('hidden'); }
+
+async function onLogin(user) {
+  currentUser = user;
+  document.getElementById('authOverlay').classList.add('hidden');
+  document.getElementById('userBar').classList.add('visible');
+  document.getElementById('userEmail').textContent = user.email.split('@')[0];
+  await refreshStatus();
+}
+
+async function refreshStatus() {
+  if (!currentUser) return;
+  try {
+    const res = await fetch('/api/generate', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: currentUser.id, action: 'status' })
+    });
+    userStatus = await res.json();
+    updateUsageBar();
+    updatePlanBadge();
+  } catch(e) {}
+}
+
+function updateUsageBar() {
+  if (!userStatus || userStatus.plan === 'premium') return;
+  const bar = document.getElementById('usageBar');
+  bar.classList.add('visible');
+  const used = userStatus.totalMonth || 0;
+  const limit = userStatus.limit || 2;
+  const pct = Math.min((used / limit) * 100, 100);
+  document.getElementById('usageCount').textContent = `${used} / ${limit === 99999 ? '∞' : limit}`;
+  const fill = document.getElementById('usageFill');
+  fill.style.width = pct + '%';
+  fill.className = 'usage-fill' + (pct >= 100 ? ' danger' : pct >= 60 ? ' warning' : '');
+}
+
+function updatePlanBadge() {
+  if (!userStatus) return;
+  const badge = document.getElementById('planBadge');
+  const plan = userStatus.plan;
+  badge.className = 'plan-badge';
+  if (plan === 'premium') { badge.textContent = '✦ Premium'; badge.classList.add('plan-premium'); }
+  else if (plan === 'inicial') { badge.textContent = '✦ Inicial'; badge.classList.add('plan-inicial'); }
+  else badge.textContent = '✦ Free';
+}
+
+// ── AUTH FORM ──
+let isLogin = false;
+document.getElementById('authToggle').addEventListener('click', () => {
+  isLogin = !isLogin;
+  document.getElementById('authTitle').innerHTML = isLogin ? 'Bienvenida <em>de vuelta</em>' : 'Tu <em>Estudio</em> UGC';
+  document.getElementById('authSub').textContent = isLogin ? 'Ingresá para continuar.' : 'Creá tu cuenta gratis y empezá a generar briefs.';
+  document.getElementById('authBtn').textContent = isLogin ? 'Iniciar sesión' : 'Crear cuenta gratis';
+  document.getElementById('authToggle').textContent = isLogin ? 'Crear cuenta' : 'Iniciar sesión';
+  document.getElementById('authErr').classList.remove('visible');
+});
+
+document.getElementById('authBtn').addEventListener('click', async () => {
+  const email = document.getElementById('authEmail').value.trim();
+  const pass = document.getElementById('authPass').value;
+  const errEl = document.getElementById('authErr');
+  const btn = document.getElementById('authBtn');
+  errEl.classList.remove('visible');
+  if (!email || !pass) { errEl.textContent = 'Completá todos los campos.'; errEl.classList.add('visible'); return; }
+  btn.disabled = true; btn.textContent = 'Procesando…';
+  try {
+    if (isLogin) {
+      const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+      if (error) throw error;
+      await onLogin(data.user);
+    } else {
+      const { data, error } = await sb.auth.signUp({ email, password: pass });
+      if (error) throw error;
+      if (data.user) await onLogin(data.user);
+      else { errEl.textContent = 'Revisá tu email para confirmar tu cuenta.'; errEl.classList.add('visible'); }
+    }
+  } catch(e) {
+    const msgs = { 'Invalid login credentials': 'Email o contraseña incorrectos.', 'User already registered': 'Email ya registrado. Iniciá sesión.' };
+    errEl.textContent = msgs[e.message] || e.message;
+    errEl.classList.add('visible');
+  }
+  btn.disabled = false;
+  btn.textContent = isLogin ? 'Iniciar sesión' : 'Crear cuenta gratis';
+});
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await sb.auth.signOut();
+  currentUser = null; userStatus = null;
+  document.getElementById('userBar').classList.remove('visible');
+  document.getElementById('usageBar').classList.remove('visible');
+  document.getElementById('resultCard').classList.remove('visible');
+  showAuth();
+});
+
+// ── PLANS MODAL ──
+document.getElementById('plansDismiss').addEventListener('click', () => {
+  document.getElementById('plansOverlay').classList.add('hidden');
+});
+
+// ── FEEDBACK ──
+document.querySelectorAll('.star').forEach(s => {
+  s.addEventListener('click', () => {
+    selStars = parseInt(s.dataset.v);
+    document.querySelectorAll('.star').forEach((st, i) => st.classList.toggle('on', i < selStars));
+  });
+});
+
+document.getElementById('fbSubmit').addEventListener('click', async () => {
+  if (!selStars) { alert('Seleccioná una puntuación'); return; }
+  const comment = document.getElementById('fbComment').value.trim();
+  await fetch('/api/generate', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId: currentUser?.id, action: 'feedback', rating: selStars, comment })
+  });
+  document.getElementById('feedbackOverlay').classList.add('hidden');
+  if (pendingPayload) { pendingFeedback = false; doGenerate(pendingPayload); pendingPayload = null; }
+});
+
+// ── FORMAT SWITCH ──
+function switchTipo(type) {
+  tipoType = type;
+  ['subVideo','subFoto','subCarrusel','subStory'].forEach(id => document.getElementById(id).classList.remove('visible'));
+  ({ video:'subVideo', foto:'subFoto', carrusel:'subCarrusel', story:'subStory' })[type] && document.getElementById(({ video:'subVideo', foto:'subFoto', carrusel:'subCarrusel', story:'subStory' })[type]).classList.add('visible');
+  const isVisual = type === 'foto' || type === 'carrusel';
+  document.getElementById('platPills').style.display = isVisual ? 'none' : 'flex';
+  document.getElementById('formatoPills').style.display = isVisual ? 'flex' : 'none';
+  document.getElementById('platLabel').textContent = isVisual ? 'Formato de imagen' : 'Plataforma';
+  document.getElementById('step3Title').textContent = isVisual ? 'Objetivo y formato' : 'Objetivo y plataforma';
+  updateEstiloMode();
+}
+
+document.querySelectorAll('#tipoPills .pill').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('#tipoPills .pill').forEach(x => x.classList.remove('active'));
+  b.classList.add('active'); switchTipo(b.dataset.type);
+}));
+
+function makeSingle(id) {
+  const btns = document.querySelectorAll(`#${id} .pill`);
+  btns.forEach(b => b.addEventListener('click', () => { btns.forEach(x => x.classList.remove('active')); b.classList.add('active'); }));
+  return () => document.querySelector(`#${id} .pill.active`)?.dataset.val || '';
+}
+const getDur = makeSingle('durPills');
+const getFoto = makeSingle('fotoPills');
+const getSlides = makeSingle('slidePills');
+const getFin = makeSingle('finPills');
+const getPlat = makeSingle('platPills');
+const getFormato = makeSingle('formatoPills');
+
+function getPlatOrFormato() {
+  return (tipoType === 'foto' || tipoType === 'carrusel') ? getFormato() : getPlat();
+}
+function getTipo() { return document.querySelector('#tipoPills .pill.active')?.dataset.val || ''; }
+function getSubParam() {
+  if (tipoType === 'video') return getDur();
+  if (tipoType === 'foto') return getFoto();
+  if (tipoType === 'carrusel') return getSlides();
+  return '15 segundos (máximo story)';
+}
+
+// ── MULTI ESTILO ──
+function updateEstiloMode() {
+  multiStyle = tipoType === 'video' && cantidad > 1;
+  document.getElementById('multiNote').classList.toggle('visible', multiStyle);
+  document.getElementById('estiloHint').textContent = multiStyle ? `Seleccioná hasta ${cantidad} estilos` : 'Seleccioná un estilo';
+  const btns = document.querySelectorAll('#estiloPills .pill');
+  btns.forEach(b => { b.classList.remove('active','multi-active'); b.onclick = null; });
+  if (!multiStyle) {
+    btns.forEach(b => b.addEventListener('click', () => { btns.forEach(x => x.classList.remove('active','multi-active')); b.classList.add('active'); }));
+    btns[0].classList.add('active');
+  } else {
+    btns.forEach(b => b.addEventListener('click', () => {
+      if (b.classList.contains('multi-active')) b.classList.remove('multi-active');
+      else if (document.querySelectorAll('#estiloPills .pill.multi-active').length < cantidad) b.classList.add('multi-active');
+    }));
+    btns[0].classList.add('multi-active');
+  }
+}
+updateEstiloMode();
+
+function getEstilos() {
+  if (multiStyle) return Array.from(document.querySelectorAll('#estiloPills .pill.multi-active')).map(b => b.dataset.val);
+  return [document.querySelector('#estiloPills .pill.active')?.dataset.val || ''];
+}
+
+// ── COUNTER ──
+document.getElementById('minusBtn').onclick = () => { if (cantidad > 1) { cantidad--; document.getElementById('cantVal').textContent = cantidad; updateEstiloMode(); } };
+document.getElementById('plusBtn').onclick = () => { if (cantidad < 10) { cantidad++; document.getElementById('cantVal').textContent = cantidad; updateEstiloMode(); } };
+
+// ── UPLOAD ──
+function handleFile(file) {
+  if (!file) return;
+  imgType = file.type || 'image/jpeg';
+  const reader = new FileReader();
+  reader.onload = e => {
+    imgBase64 = e.target.result.split(',')[1];
+    const img = document.getElementById('previewImg');
+    img.src = e.target.result; img.style.display = 'block';
+    document.getElementById('uploadPrompt').style.display = 'none';
+    document.getElementById('changeWrap').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+document.getElementById('fileInput').addEventListener('change', function() { handleFile(this.files[0]); });
+document.getElementById('changeImg').addEventListener('click', () => document.getElementById('fileInput').click());
+const zone = document.getElementById('uploadZone');
+zone.addEventListener('dragover', e => { e.preventDefault(); zone.style.borderColor = 'var(--purple)'; });
+zone.addEventListener('dragleave', () => { zone.style.borderColor = ''; });
+zone.addEventListener('drop', e => { e.preventDefault(); zone.style.borderColor = ''; handleFile(e.dataTransfer.files[0]); });
+
+// ── RESET ──
+document.getElementById('resetBtn').addEventListener('click', () => {
+  imgBase64 = null; cantidad = 1; briefRaw = '';
+  document.getElementById('previewImg').style.display = 'none';
+  document.getElementById('uploadPrompt').style.display = 'block';
+  document.getElementById('changeWrap').style.display = 'none';
+  document.getElementById('cantVal').textContent = '1';
+  ['cliente','producto','publico','extras'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('resultCard').classList.remove('visible');
+  document.getElementById('errMsg').classList.remove('visible');
+  document.getElementById('briefEl').innerHTML = '';
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active','multi-active'));
+  document.querySelector('#tipoPills .pill').classList.add('active');
+  document.querySelector('#durPills .pill').classList.add('active');
+  document.querySelector('#fotoPills .pill').classList.add('active');
+  document.querySelector('#slidePills .pill').classList.add('active');
+  document.querySelector('#finPills .pill').classList.add('active');
+  document.querySelector('#platPills .pill').classList.add('active');
+  document.querySelector('#formatoPills .pill').classList.add('active');
+  switchTipo('video');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// ── BUILD PROMPT ──
+function buildPrompt() {
+  const tipo = getTipo(), subParam = getSubParam(), fin = getFin(), plat = getPlatOrFormato();
+  const estilos = getEstilos();
+  const cliente = document.getElementById('cliente').value.trim();
+  const producto = document.getElementById('producto').value.trim();
+  const publico = document.getElementById('publico').value.trim();
+  const extras = document.getElementById('extras').value.trim();
+  const estiloStr = estilos.length > 1 ? estilos.map((e,i) => `Pieza ${i+1}: ${e}`).join(' / ') : estilos[0];
+  const piezas = Array.from({length:cantidad},(_,i) => `— Pieza ${i+1} [Estilo: ${estilos[i]||estilos[estilos.length-1]}]:`).join('\n');
+  const isVisual = tipoType === 'foto' || tipoType === 'carrusel';
+
+  const base = `Eres Algris Márquez, consultora experta en contenido UGC. Analizá la imagen y creá un brief creativo completo.
+
+FORMATO DE RESPUESTA — MUY IMPORTANTE:
+- Usá SOLO el símbolo ✦ para iniciar cada sección (sin asteriscos, sin #, sin **)
+- Bullets con guión: -
+- Piezas con: — Pieza N [Estilo]:
+- Hooks numerados: 1. 2. 3.
+- Texto limpio, sin markdown
+
+DATOS:
+${cliente ? `- Cliente: ${cliente}` : ''}
+- Formato: ${tipo} — ${cantidad} pieza${cantidad>1?'s':''} — ${subParam}
+- Objetivo: ${fin}
+- ${isVisual ? 'Formato imagen' : 'Plataforma'}: ${plat}
+- Estilo(s): ${estiloStr}
+${producto ? `- Producto: ${producto}` : ''}
+${publico ? `- Público: ${publico}` : ''}
+${extras ? `- Notas: ${extras}` : ''}`;
+
+  if (isVisual) {
+    return base + `
+
+✦ ANÁLISIS DEL PRODUCTO
+[Forma, textura, colores, ángulo más atractivo, oportunidades visuales]
+
+✦ BRIEF POR TOMA
+${piezas}
+[Ángulo, composición, distancia focal, elementos en escena, fondo]
+
+✦ DIRECCIÓN DE ARTE
+- Paleta de colores y fondos
+- Props y superficies (madera, mármol, tela, etc.)
+- Iluminación: tipo, dirección, difusores
+- Temperatura de color
+
+✦ COPY Y TEXTO
+[Overlay o caption para cada pieza]
+
+✦ BRIEF PARA EL FOTÓGRAFO
+[5 instrucciones concretas: encuadre, luz, props, postproducción]
+
+✦ TIPS DE ALGRIS
+[2 consejos para que estas fotos conviertan mejor para ${fin}]`;
+  }
+
+  return base + `
+
+✦ ANÁLISIS DEL PRODUCTO
+[Categoría, propuesta visual, oportunidades para video]
+
+✦ CONCEPTO CREATIVO
+[Una frase que define el eje narrativo]
+
+✦ BRIEF POR PIEZA
+${piezas}
+[Apertura, acción principal, encuadre, elementos en escena, cierre]
+
+✦ GANCHOS Y HOOKS
+[5 opciones de apertura para los primeros 2 segundos — ${plat}, objetivo ${fin}]
+
+✦ COPY Y TEXTO EN PANTALLA
+[Overlays, subtítulos por pieza]
+
+✦ DIRECCIÓN DE ARTE
+- Paleta de colores y fondos
+- Props y escenografía
+- Iluminación ideal
+- Outfit del creador
+
+✦ AUDIO
+[Música o sonido para ${plat}]
+
+✦ BRIEF PARA EL CREADOR
+[5 instrucciones concretas para ejecutar]
+
+✦ TIPS DE ALGRIS
+[2 consejos estratégicos para ${fin} en ${plat}]`;
+}
+
+// ── GENERATE ──
+document.getElementById('genBtn').addEventListener('click', async () => {
+  const errEl = document.getElementById('errMsg');
+  errEl.classList.remove('visible');
+  if (!imgBase64) { errEl.textContent = 'Subí una imagen del producto para continuar.'; errEl.classList.add('visible'); return; }
+  if (!currentUser) { showAuth(); return; }
+
+  await refreshStatus();
+  if (userStatus?.blocked) {
+    document.getElementById('plansMsg').textContent = userStatus.message || 'Elegí un plan para seguir creando.';
+    document.getElementById('plansOverlay').classList.remove('hidden');
+    return;
+  }
+
+  const payload = { imageBase64: imgBase64, imageType: imgType, prompt: buildPrompt() };
+
+  if (userStatus?.showFeedback && !pendingFeedback) {
+    pendingFeedback = true; pendingPayload = payload;
+    document.getElementById('feedbackOverlay').classList.remove('hidden');
+    return;
+  }
+
+  doGenerate(payload);
+});
+
+async function doGenerate(payload) {
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true; btn.textContent = '⏳ Generando…';
+
+  const rc = document.getElementById('resultCard');
+  const lw = document.getElementById('loadingWrap');
+  const be = document.getElementById('briefEl');
+  rc.classList.add('visible'); lw.style.display = 'flex';
+  be.style.display = 'none'; be.innerHTML = ''; briefRaw = '';
+  setTimeout(() => rc.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+
+  const msgs = ['Analizando la imagen…','Identificando oportunidades creativas…','Escribiendo el concepto…','Preparando el brief…','Agregando los tips de Algris…'];
+  let mi = 0;
+  const lt = document.getElementById('loadingText');
+  lt.textContent = msgs[0];
+  const iv = setInterval(() => { mi = (mi+1) % msgs.length; lt.textContent = msgs[mi]; }, 2800);
+
+  try {
+    const res = await fetch('/api/generate', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...payload, userId: currentUser?.id })
+    });
+    clearInterval(iv);
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || 'Error de API');
+    lw.style.display = 'none'; be.style.display = 'block';
+    briefRaw = data.result; renderBrief(briefRaw);
+    await refreshStatus();
+  } catch(e) {
+    clearInterval(iv);
+    lw.style.display = 'none'; be.style.display = 'block';
+    be.innerHTML = `<p style="color:#A32D2D;font-size:14px">Error: ${e.message}</p>`;
+  }
+  btn.disabled = false; btn.innerHTML = '✦ Generar brief creativo';
+}
+
+// ── RENDER BRIEF ──
+function fmtInline(t) { return t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>'); }
+
+const ICONS = { 'ANÁLISIS':'🔍','CONCEPTO':'💡','BRIEF':'📋','TOMA':'📋','GANCHO':'🪝','HOOK':'🪝','COPY':'💬','DIRECCI':'🎨','ARTE':'🎨','AUDIO':'🔊','CREADOR':'📌','FOTÓGRAFO':'📌','TIPS':'⚡' };
+
+function renderBrief(raw) {
+  const el = document.getElementById('briefEl');
+  el.innerHTML = '';
+  const clean = raw.replace(/\*\*/g,'').replace(/^\*(.+)\*$/gm,'$1');
+  const rx = /✦\s*([^\n]+)\n([\s\S]*?)(?=✦|$)/g;
+  let m, found = false;
+  while ((m = rx.exec(clean)) !== null) {
+    found = true;
+    el.appendChild(buildSection(m[1].trim(), m[2].trim()));
+  }
+  if (!found) {
+    const p = document.createElement('div');
+    p.style.cssText = 'font-size:14px;line-height:1.8';
+    p.innerHTML = fmtInline(clean.replace(/\n/g,'<br>'));
+    el.appendChild(p);
+  }
+}
+
+function buildSection(title, body) {
+  const sec = document.createElement('div'); sec.className = 'b-section';
+  const icoKey = Object.keys(ICONS).find(k => title.toUpperCase().includes(k)) || '';
+  const ico = ICONS[icoKey] || '✦';
+  const titleEl = document.createElement('div'); titleEl.className = 'b-title';
+  titleEl.innerHTML = `<span class="ico">${ico}</span>${title}`;
+  sec.appendChild(titleEl);
+
+  const lines = body.split('\n').filter(l => l.trim());
+  const isArte = title.toUpperCase().includes('DIRECCI') || title.toUpperCase().includes('ARTE');
+  const isPiece = (title.toUpperCase().includes('BRIEF') && title.toUpperCase().includes('PIEZA')) || title.toUpperCase().includes('TOMA');
+  const isHook = title.toUpperCase().includes('GANCHO') || title.toUpperCase().includes('HOOK');
+
+  if (isPiece) {
+    let block = null, ul = null;
+    lines.forEach(line => {
+      if (/^—\s*[Pp]ieza\s*\d+|^—\s*[Tt]oma\s*\d+/.test(line)) {
+        block = document.createElement('div'); block.className = 'b-piece';
+        const lbl = document.createElement('div'); lbl.className = 'b-piece-label';
+        lbl.textContent = line.replace(/^—\s*/,''); block.appendChild(lbl);
+        ul = document.createElement('ul'); block.appendChild(ul); sec.appendChild(block);
+      } else if (ul) {
+        const clean = line.replace(/^[-·]\s*/,'').trim(); if (!clean) return;
+        const li = document.createElement('li'); li.innerHTML = fmtInline(clean); ul.appendChild(li);
+      } else {
+        const p = document.createElement('p'); p.className = 'b-p'; p.innerHTML = fmtInline(line); sec.appendChild(p);
+      }
+    });
+  } else if (isHook) {
+    let n = 0;
+    lines.forEach(line => {
+      const clean = line.replace(/^\d+[\.\)]\s*/,'').replace(/^[-·]\s*/,'').trim(); if (!clean) return;
+      n++;
+      const d = document.createElement('div'); d.className = 'b-hook';
+      d.innerHTML = `<span class="b-hook-num">${n}</span>${fmtInline(clean)}`;
+      sec.appendChild(d);
+    });
+  } else if (isArte) {
+    const arteMap = { 'paleta':'🎨 Paleta de colores', 'color':'🎨 Paleta', 'prop':'🪴 Props', 'escenograf':'🪴 Escenografía', 'iluminaci':'💡 Iluminación', 'temperatura':'🌡 Temperatura', 'outfit':'👗 Outfit', 'presentaci':'👗 Presentación' };
+    const grid = document.createElement('div'); grid.className = 'b-arte-grid';
+    const cards = {};
+    lines.forEach(line => {
+      const lower = line.toLowerCase().replace(/^[-·]\s*/,'');
+      const key = Object.keys(arteMap).find(k => lower.startsWith(k));
+      if (key && !cards[key]) {
+        const card = document.createElement('div'); card.className = 'b-arte-card';
+        const lbl = document.createElement('div'); lbl.className = 'b-arte-label'; lbl.innerHTML = arteMap[key]; card.appendChild(lbl);
+        const bod = document.createElement('div'); bod.className = 'b-arte-body';
+        bod.innerHTML = fmtInline(line.replace(/^[-·]\s*/,'').replace(/^[^:]+:\s*/,'').trim());
+        card.appendChild(bod); cards[key] = bod; grid.appendChild(card);
+      } else if (key && cards[key]) {
+        cards[key].innerHTML += '<br>' + fmtInline(line.replace(/^[-·]\s*/,'').replace(/^[^:]+:\s*/,'').trim());
+      } else if (Object.keys(cards).length > 0) {
+        const last = Object.values(cards).pop();
+        if (last) last.innerHTML += '<br>' + fmtInline(line.replace(/^[-·]\s*/,''));
+      } else {
+        const p = document.createElement('p'); p.className = 'b-p'; p.innerHTML = fmtInline(line); sec.appendChild(p);
+      }
+    });
+    if (grid.children.length) sec.appendChild(grid);
+  } else {
+    const hasBullets = lines.some(l => /^[-·•]/.test(l.trim()) || /^\d+\./.test(l.trim()));
+    if (hasBullets) {
+      const ul = document.createElement('ul'); ul.className = 'b-ul';
+      lines.forEach(line => {
+        const clean = line.replace(/^[-·•]\s*/,'').replace(/^\d+\.\s*/,'').trim(); if (!clean) return;
+        const li = document.createElement('li'); li.innerHTML = fmtInline(clean); ul.appendChild(li);
+      });
+      sec.appendChild(ul);
+    } else {
+      lines.forEach(line => { if (!line.trim()) return; const p = document.createElement('p'); p.className = 'b-p'; p.innerHTML = fmtInline(line); sec.appendChild(p); });
+    }
+  }
+  return sec;
+}
+
+// ── COPY ──
+document.getElementById('copyBtn').addEventListener('click', () => {
+  if (!briefRaw) return;
+  navigator.clipboard.writeText(briefRaw.replace(/\*\*/g,'')).then(() => {
+    const b = document.getElementById('copyBtn'); b.textContent = '✓ Copiado';
+    setTimeout(() => b.textContent = 'Copiar', 2000);
+  });
+});
+
+// ── PDF ──
+document.getElementById('pdfBtn').addEventListener('click', () => {
+  if (!briefRaw) return;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W = 210, H = 297, mL = 18, mR = 18, cW = 174;
+
+  function header(first) {
+    doc.setFillColor(74,26,98); doc.rect(0,0,W,first?44:10,'F');
+    doc.setFillColor(201,148,58); doc.rect(0,first?44:10,W,1.5,'F');
+    if (first) {
+      doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(19);
+      doc.text('ALGRIS MÁRQUEZ', mL, 20);
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(200,170,220);
+      doc.text('UGC CONSULTING', mL, 27);
+      doc.setTextColor(201,148,58); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+      doc.text('BRIEF CREATIVO UGC', W-mR, 20, {align:'right'});
+      const cl = document.getElementById('cliente').value.trim();
+      if (cl) { doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(200,170,220); doc.text(`Para: ${cl}`, W-mR, 28, {align:'right'}); }
+      doc.setTextColor(200,170,220); doc.setFontSize(7.5);
+      doc.text(new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'}), W-mR, 36, {align:'right'});
+    } else {
+      doc.setTextColor(200,170,220); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+      doc.text('ALGRIS MÁRQUEZ · UGC Consulting', mL, 7);
+    }
+  }
+
+  function footer() {
+    doc.setFillColor(247,245,240); doc.rect(0,H-12,W,12,'F');
+    doc.setFillColor(201,148,58); doc.rect(0,H-12,W,0.8,'F');
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(107,107,128);
+    doc.text('Generado por Algris Márquez · UGC Consulting · © 2025', mL, H-5);
+    doc.setTextColor(107,45,139); doc.text('algrismarquez.com', W-mR, H-5, {align:'right'});
+  }
+
+  header(true);
+  let y = 52;
+  const clean = briefRaw.replace(/\*\*/g,'').replace(/\*/g,'');
+  const rx = /✦\s*([^\n]+)\n([\s\S]*?)(?=✦|$)/g;
+  let m;
+
+  while ((m = rx.exec(clean)) !== null) {
+    const title = m[1].trim();
+    const lines = m[2].trim().split('\n').filter(l => l.trim());
+    if (y > H-50) { footer(); doc.addPage(); header(false); y=18; }
+    y+=3;
+    doc.setFillColor(243,234,247); doc.roundedRect(mL-2,y-5,cW+4,9,2,2,'F');
+    doc.setFillColor(107,45,139); doc.roundedRect(mL-2,y-5,3,9,1,1,'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(74,26,98);
+    doc.text(title, mL+4, y); y+=9; doc.setTextColor(26,26,46);
+
+    for (const line of lines) {
+      if (y > H-22) { footer(); doc.addPage(); header(false); y=18; doc.setTextColor(26,26,46); }
+      const isPiece = /^—\s*[Pp]ieza|^—\s*[Tt]oma/.test(line);
+      const isBullet = /^[-·•]/.test(line.trim());
+      const isNum = /^\d+[\.\)]/.test(line.trim());
+      if (isPiece) {
+        y+=2; doc.setFillColor(247,245,240); doc.roundedRect(mL,y-4,cW,7,1,1,'F');
+        doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(107,45,139);
+        doc.text(line.replace(/^—\s*/,'').toUpperCase(), mL+3, y); y+=7; doc.setTextColor(26,26,46);
+      } else if (isBullet || isNum) {
+        doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
+        doc.setTextColor(107,45,139); doc.text('•', mL+2, y); doc.setTextColor(26,26,46);
+        const w = doc.splitTextToSize(line.replace(/^[-·•]\s*/,'').replace(/^\d+[\.\)]\s*/,''), cW-10);
+        doc.text(w, mL+8, y); y+=w.length*4.8+1;
+      } else {
+        doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
+        const w = doc.splitTextToSize(line, cW);
+        doc.text(w, mL, y); y+=w.length*4.8+1;
+      }
+    }
+    y+=5;
+  }
+  footer();
+  const cl = document.getElementById('cliente').value.trim();
+  doc.save(cl ? `brief-${cl.toLowerCase().replace(/\s+/g,'-')}.pdf` : 'brief-ugc-algrismarquez.pdf');
+});
+</script>
+</body>
+</html>
