@@ -6,6 +6,7 @@
 <title>UGC Studio · Algris Márquez</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -127,29 +128,64 @@ input::placeholder{color:var(--muted)}
 
 /* BRIEF RENDERED */
 .brief-rendered{font-size:14px;line-height:1.85;color:var(--text)}
-.b-section{margin-bottom:1.5rem}
+.b-section{margin-bottom:1.75rem}
 .b-section:last-child{margin-bottom:0}
-.b-title{display:flex;align-items:center;gap:8px;font-family:var(--font-serif);font-size:16px;font-weight:700;color:var(--navy);margin-bottom:12px;padding:10px 14px;background:linear-gradient(135deg,#F8F3FC,#FBF7EE);border-radius:10px;border-left:3px solid var(--purple)}
-.b-title .ico{font-size:14px}
-.b-piece{background:var(--cream);border:1px solid var(--border);border-radius:10px;border-left:3px solid var(--purple-mid);padding:13px 15px;margin-bottom:9px}
-.b-piece-label{font-family:var(--font-serif);font-size:13px;font-weight:700;color:var(--purple-dark);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.4px}
-.b-piece ul{list-style:none;padding:0;margin:0}
-.b-piece ul li{font-size:13px;padding:4px 0 4px 18px;position:relative;border-bottom:1px solid var(--border-soft);line-height:1.6}
-.b-piece ul li:last-child{border-bottom:none}
-.b-piece ul li::before{content:'→';position:absolute;left:0;color:var(--purple-mid);font-size:11px;top:6px}
-.b-hook{background:linear-gradient(135deg,#FAFAF8,#F8F3FC);border:1px solid rgba(107,45,139,0.08);border-radius:10px;padding:10px 14px 10px 36px;margin-bottom:7px;font-size:13.5px;position:relative;box-shadow:0 1px 4px rgba(107,45,139,0.04)}
-.b-hook:hover{box-shadow:0 3px 12px rgba(107,45,139,0.08)}
-.b-hook-num{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:18px;height:18px;background:var(--grad-purple);color:#fff;border-radius:50%;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(107,45,139,0.25)}
+
+/* Section header con icono */
+.b-title{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:0}
+.b-title-icon{width:30px;height:30px;border-radius:8px;background:#EEEDFE;color:#534AB7;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.b-title-icon.gold{background:#FAEEDA;color:#854F0B}
+.b-title-text{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--purple)}
+.b-title-divider{height:0.5px;background:rgba(107,45,139,0.12);margin-bottom:12px}
+
+/* Concepto creativo */
+.b-concepto{background:#F8F3FC;border-left:3px solid var(--purple);border-radius:0 10px 10px 0;padding:12px 16px;font-size:13.5px;color:var(--text);line-height:1.7;font-style:italic}
+
+/* Piezas */
+.b-piece{background:var(--cream);border:0.5px solid rgba(107,45,139,0.1);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.b-piece-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.b-piece-badge{background:var(--purple);color:#fff;border-radius:100px;padding:3px 12px;font-size:10px;font-weight:600;letter-spacing:0.5px}
+.b-piece-tipo{font-size:11px;color:var(--muted)}
+.b-piece ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+.b-piece ul li{font-size:12.5px;padding:0 0 0 16px;position:relative;line-height:1.55;color:var(--text)}
+.b-piece ul li::before{content:'';position:absolute;left:0;top:7px;width:6px;height:6px;background:var(--gold);border-radius:50%}
+
+/* Hooks */
+.b-hook{background:#fff;border:0.5px solid rgba(107,45,139,0.1);border-radius:10px;padding:10px 14px 10px 38px;margin-bottom:7px;font-size:13px;position:relative}
+.b-hook-num{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:20px;height:20px;background:var(--purple);color:#fff;border-radius:50%;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center}
+
+/* Arte — 2 columnas */
 .b-arte-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
-.b-arte-card{background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:13px 14px;transition:box-shadow 0.15s}
-.b-arte-card:hover{box-shadow:0 3px 12px rgba(107,45,139,0.08)}
-.b-arte-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--purple);margin-bottom:7px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:5px}
-.b-arte-body{font-size:13px;color:var(--text);line-height:1.7}
-.b-ul{list-style:none;padding:0;margin:4px 0}
-.b-ul li{padding:4px 0 4px 18px;position:relative;font-size:13.5px;border-bottom:1px solid var(--border-soft)}
-.b-ul li:last-child{border-bottom:none}
-.b-ul li::before{content:'•';position:absolute;left:4px;color:var(--purple);font-weight:700}
-.b-p{margin-bottom:6px;font-size:13.5px}
+.b-arte-card{background:var(--cream);border:0.5px solid rgba(107,45,139,0.1);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.b-arte-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--purple);display:flex;align-items:center;gap:5px}
+.b-arte-body{font-size:12.5px;color:var(--text);line-height:1.6}
+
+/* Lista genérica */
+.b-ul{list-style:none;padding:0;margin:4px 0;display:flex;flex-direction:column;gap:7px}
+.b-ul li{padding:9px 12px 9px 12px;font-size:12.5px;background:var(--cream);border:0.5px solid rgba(107,45,139,0.08);border-radius:8px;display:flex;align-items:flex-start;gap:8px;line-height:1.5;color:var(--text)}
+.b-ul li::before{content:'';display:inline-block;min-width:16px;height:16px;background:#E1F5EE;border-radius:50%;margin-top:1px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%230F6E56' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center}
+
+/* Audio — 2 columnas */
+.b-audio-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.b-audio-card{background:var(--cream);border:0.5px solid rgba(107,45,139,0.1);border-radius:10px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
+.b-audio-icon{width:28px;height:28px;background:#FAEEDA;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.b-audio-content{display:flex;flex-direction:column;gap:2px}
+.b-audio-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#854F0B}
+.b-audio-text{font-size:12px;color:var(--text);line-height:1.5}
+
+/* Tips */
+.b-tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+.b-tip-card{border-left:3px solid var(--gold);background:#FAEEDA22;border-radius:0 10px 10px 0;padding:12px 14px}
+.b-tip-title{font-size:10px;font-weight:600;color:#854F0B;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px}
+.b-tip-text{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* Copy timestamps */
+.b-copy-list{display:flex;flex-direction:column;gap:7px;margin-top:4px}
+.b-copy-item{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;border:0.5px solid rgba(107,45,139,0.1);border-radius:8px;background:#fff}
+.b-copy-time{min-width:60px;font-size:10px;color:var(--purple);font-weight:600;background:#EEEDFE;border-radius:100px;padding:2px 8px;text-align:center;flex-shrink:0;margin-top:2px}
+.b-copy-text{font-size:12.5px;color:var(--text);line-height:1.5}
+
+.b-p{margin-bottom:6px;font-size:13px;line-height:1.7}
 
 /* LOADING */
 .loading-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;padding:2.5rem}
@@ -211,6 +247,24 @@ input::placeholder{color:var(--muted)}
 .footer-line{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:0 auto 12px}
 .footer strong{background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:600}
 
+/* ── SUCCESS PAGE ── */
+.success-overlay{position:fixed;inset:0;z-index:2000;background:rgba(26,10,46,0.85);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:1rem}
+.success-overlay.visible{display:flex;animation:fadeUp 0.4s ease}
+.success-box{background:#fff;border-radius:28px;padding:2.5rem 2rem;width:100%;max-width:420px;text-align:center;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+.success-box::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#4A1A62,#6B2D8B,#C9943A,#6B2D8B,#4A1A62)}
+.success-icon{font-size:52px;margin-bottom:16px;animation:pop 0.5s ease}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+.success-box h3{font-family:var(--font-serif);font-size:26px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.success-box h3 em{font-style:normal;background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.success-box p{font-size:13.5px;color:var(--muted);line-height:1.7;margin-bottom:1.5rem}
+.success-plan{display:inline-flex;align-items:center;gap:8px;background:var(--purple-light);border:1px solid rgba(107,45,139,0.2);border-radius:100px;padding:8px 20px;font-size:13px;font-weight:600;color:var(--purple);margin-bottom:1.5rem}
+.success-features{text-align:left;background:var(--cream);border-radius:14px;padding:14px 16px;margin-bottom:1.5rem}
+.success-feature{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text);padding:5px 0;border-bottom:1px solid var(--border-soft)}
+.success-feature:last-child{border-bottom:none}
+.success-feature .check{color:var(--purple);font-weight:700;font-size:14px}
+.success-cta{width:100%;padding:14px;background:var(--grad-purple);color:#fff;border:none;border-radius:12px;font-family:var(--font-serif);font-size:17px;font-weight:600;cursor:pointer;box-shadow:0 6px 20px rgba(107,45,139,0.3);transition:all 0.2s}
+.success-cta:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(107,45,139,0.4)}
+
 @media(max-width:520px){
   .header h1{font-size:30px}
   .param-grid{grid-template-columns:1fr}
@@ -218,10 +272,24 @@ input::placeholder{color:var(--muted)}
   .btn-row{flex-direction:column}
   .plan-grid{grid-template-columns:1fr}
   .b-arte-grid{grid-template-columns:1fr}
+  .b-tips-grid{grid-template-columns:1fr}
+  .b-audio-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-box">
+    <div class="success-icon">🎉</div>
+    <h3>¡Bienvenida al <em>Plan</em>!</h3>
+    <p id="successMsg">Tu pago fue procesado. Ya tenés acceso completo a UGC Studio.</p>
+    <div class="success-plan" id="successPlan">✦ Plan Activado</div>
+    <div class="success-features" id="successFeatures"></div>
+    <button class="success-cta" id="successCta">Empezar a crear briefs ✦</button>
+  </div>
+</div>
 
 <!-- AUTH OVERLAY -->
 <div class="overlay hidden" id="authOverlay">
@@ -480,8 +548,40 @@ let imgBase64 = null, imgType = 'image/jpeg', cantidad = 1, tipoType = 'video';
 let multiStyle = false, briefRaw = '', currentUser = null, userStatus = null;
 let pendingFeedback = false, pendingPayload = null, selStars = 0;
 
+// ── CHECK SUCCESS REDIRECT ──
+function checkSuccessRedirect() {
+  const params = new URLSearchParams(window.location.search);
+  const plan = params.get('plan');
+  if (!plan) return;
+
+  const features = {
+    inicial: ['12 briefs creativos por mes', 'Todos los formatos desbloqueados', 'PDF con tu marca', 'Reels, Fotos, Carrusel y Stories'],
+    premium: ['Briefs ilimitados', 'Todos los formatos desbloqueados', 'PDF con tu marca', 'Acceso prioritario a nuevas funciones']
+  };
+
+  const planName = plan === 'premium' ? 'Premium' : 'Inicial';
+  document.getElementById('successPlan').textContent = `✦ Plan ${planName} Activado`;
+  document.getElementById('successMsg').textContent = `Tu pago fue procesado exitosamente. Ya tenés acceso completo al Plan ${planName}.`;
+
+  const featList = features[plan] || [];
+  document.getElementById('successFeatures').innerHTML = featList.map(f =>
+    `<div class="success-feature"><span class="check">✓</span>${f}</div>`
+  ).join('');
+
+  document.getElementById('successOverlay').classList.add('visible');
+
+  // Limpiar URL
+  window.history.replaceState({}, '', window.location.pathname);
+}
+
+document.getElementById('successCta').addEventListener('click', () => {
+  document.getElementById('successOverlay').classList.remove('visible');
+  refreshStatus();
+});
+
 // ── SUPABASE AUTH INIT ──
 (async () => {
+  checkSuccessRedirect();
   const { data: { session } } = await sb.auth.getSession();
   if (session?.user) await onLogin(session.user);
   else showAuth();
@@ -560,8 +660,17 @@ document.getElementById('authBtn').addEventListener('click', async () => {
     } else {
       const { data, error } = await sb.auth.signUp({ email, password: pass });
       if (error) throw error;
-      if (data.user) await onLogin(data.user);
-      else { errEl.textContent = 'Revisá tu email para confirmar tu cuenta.'; errEl.classList.add('visible'); }
+      if (data.user) {
+        // Send welcome email
+        try {
+          await fetch('/api/welcome', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: data.user.email })
+          });
+        } catch(e) {}
+        await onLogin(data.user);
+      } else { errEl.textContent = 'Revisa tu email para confirmar tu cuenta.'; errEl.classList.add('visible'); }
     }
   } catch(e) {
     const msgs = { 'Invalid login credentials': 'Email o contraseña incorrectos.', 'User already registered': 'Email ya registrado. Iniciá sesión.' };
@@ -896,11 +1005,17 @@ function renderBrief(raw) {
 
 function buildSection(title, body) {
   const sec = document.createElement('div'); sec.className = 'b-section';
-  const icoKey = Object.keys(ICONS).find(k => title.toUpperCase().includes(k)) || '';
-  const ico = ICONS[icoKey] || '✦';
-  const titleEl = document.createElement('div'); titleEl.className = 'b-title';
-  titleEl.innerHTML = `<span class="ico">${ico}</span>${title}`;
-  sec.appendChild(titleEl);
+  const t = title.toUpperCase();
+  const isGold = t.includes('GANCHO')||t.includes('HOOK')||t.includes('AUDIO')||t.includes('TIPS')||t.includes('COPY');
+  const icoMap = {'ANÁLISIS':'ti-package','CONCEPTO':'ti-bulb','BRIEF':'ti-video','TOMA':'ti-camera','GANCHO':'ti-hook','HOOK':'ti-hook','COPY':'ti-typography','DIRECCI':'ti-palette','ARTE':'ti-palette','AUDIO':'ti-music','CREADOR':'ti-list-check','FOTÓGRAFO':'ti-list-check','TIPS':'ti-star'};
+  const icoKey = Object.keys(icoMap).find(k => t.includes(k)) || '';
+  const icoClass = icoMap[icoKey] || 'ti-file-description';
+  const titleWrap = document.createElement('div'); titleWrap.className = 'b-title';
+  const iconEl = document.createElement('div'); iconEl.className = 'b-title-icon'+(isGold?' gold':'');
+  iconEl.innerHTML = `<i class="ti ${icoClass}" aria-hidden="true"></i>`;
+  const textEl = document.createElement('span'); textEl.className = 'b-title-text'; textEl.textContent = title;
+  titleWrap.appendChild(iconEl); titleWrap.appendChild(textEl); sec.appendChild(titleWrap);
+  const divider = document.createElement('div'); divider.className = 'b-title-divider'; sec.appendChild(divider);
 
   const lines = body.split('\n').filter(l => l.trim());
   const isArte = title.toUpperCase().includes('DIRECCI') || title.toUpperCase().includes('ARTE');
@@ -912,8 +1027,14 @@ function buildSection(title, body) {
     lines.forEach(line => {
       if (/^—\s*[Pp]ieza\s*\d+|^—\s*[Tt]oma\s*\d+/.test(line)) {
         block = document.createElement('div'); block.className = 'b-piece';
-        const lbl = document.createElement('div'); lbl.className = 'b-piece-label';
-        lbl.textContent = line.replace(/^—\s*/,''); block.appendChild(lbl);
+        const hdr = document.createElement('div'); hdr.className = 'b-piece-header';
+        const raw = line.replace(/^—\s*/,'');
+        const numMatch = raw.match(/(\d+)/);
+        const tipoMatch = raw.match(/\[([^\]]+)\]/);
+        const badge = document.createElement('span'); badge.className = 'b-piece-badge';
+        badge.textContent = 'Pieza ' + (numMatch ? numMatch[1] : ''); hdr.appendChild(badge);
+        if (tipoMatch) { const tipo = document.createElement('span'); tipo.className = 'b-piece-tipo'; tipo.textContent = tipoMatch[1]; hdr.appendChild(tipo); }
+        block.appendChild(hdr);
         ul = document.createElement('ul'); block.appendChild(ul); sec.appendChild(block);
       } else if (ul) {
         const clean = line.replace(/^[-·]\s*/,'').trim(); if (!clean) return;
