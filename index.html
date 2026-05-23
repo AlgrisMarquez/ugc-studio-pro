@@ -6,7 +6,6 @@
 <title>UGC Studio · Algris Márquez</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -128,64 +127,29 @@ input::placeholder{color:var(--muted)}
 
 /* BRIEF RENDERED */
 .brief-rendered{font-size:14px;line-height:1.85;color:var(--text)}
-.b-section{margin-bottom:1.75rem}
+.b-section{margin-bottom:1.5rem}
 .b-section:last-child{margin-bottom:0}
-
-/* Section header con icono */
-.b-title{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:0}
-.b-title-icon{width:30px;height:30px;border-radius:8px;background:#EEEDFE;color:#534AB7;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
-.b-title-icon.gold{background:#FAEEDA;color:#854F0B}
-.b-title-text{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--purple)}
-.b-title-divider{height:0.5px;background:rgba(107,45,139,0.12);margin-bottom:12px}
-
-/* Concepto creativo */
-.b-concepto{background:#F8F3FC;border-left:3px solid var(--purple);border-radius:0 10px 10px 0;padding:12px 16px;font-size:13.5px;color:var(--text);line-height:1.7;font-style:italic}
-
-/* Piezas */
-.b-piece{background:var(--cream);border:0.5px solid rgba(107,45,139,0.1);border-radius:10px;padding:14px 16px;margin-bottom:10px}
-.b-piece-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.b-piece-badge{background:var(--purple);color:#fff;border-radius:100px;padding:3px 12px;font-size:10px;font-weight:600;letter-spacing:0.5px}
-.b-piece-tipo{font-size:11px;color:var(--muted)}
-.b-piece ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
-.b-piece ul li{font-size:12.5px;padding:0 0 0 16px;position:relative;line-height:1.55;color:var(--text)}
-.b-piece ul li::before{content:'';position:absolute;left:0;top:7px;width:6px;height:6px;background:var(--gold);border-radius:50%}
-
-/* Hooks */
-.b-hook{background:#fff;border:0.5px solid rgba(107,45,139,0.1);border-radius:10px;padding:10px 14px 10px 38px;margin-bottom:7px;font-size:13px;position:relative}
-.b-hook-num{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:20px;height:20px;background:var(--purple);color:#fff;border-radius:50%;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center}
-
-/* Arte — 2 columnas */
+.b-title{display:flex;align-items:center;gap:8px;font-family:var(--font-serif);font-size:16px;font-weight:700;color:var(--navy);margin-bottom:12px;padding:10px 14px;background:linear-gradient(135deg,#F8F3FC,#FBF7EE);border-radius:10px;border-left:3px solid var(--purple)}
+.b-title .ico{font-size:14px}
+.b-piece{background:var(--cream);border:1px solid var(--border);border-radius:10px;border-left:3px solid var(--purple-mid);padding:13px 15px;margin-bottom:9px}
+.b-piece-label{font-family:var(--font-serif);font-size:13px;font-weight:700;color:var(--purple-dark);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.4px}
+.b-piece ul{list-style:none;padding:0;margin:0}
+.b-piece ul li{font-size:13px;padding:4px 0 4px 18px;position:relative;border-bottom:1px solid var(--border-soft);line-height:1.6}
+.b-piece ul li:last-child{border-bottom:none}
+.b-piece ul li::before{content:'→';position:absolute;left:0;color:var(--purple-mid);font-size:11px;top:6px}
+.b-hook{background:linear-gradient(135deg,#FAFAF8,#F8F3FC);border:1px solid rgba(107,45,139,0.08);border-radius:10px;padding:10px 14px 10px 36px;margin-bottom:7px;font-size:13.5px;position:relative;box-shadow:0 1px 4px rgba(107,45,139,0.04)}
+.b-hook:hover{box-shadow:0 3px 12px rgba(107,45,139,0.08)}
+.b-hook-num{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:18px;height:18px;background:var(--grad-purple);color:#fff;border-radius:50%;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(107,45,139,0.25)}
 .b-arte-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
-.b-arte-card{background:var(--cream);border:0.5px solid rgba(107,45,139,0.1);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
-.b-arte-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--purple);display:flex;align-items:center;gap:5px}
-.b-arte-body{font-size:12.5px;color:var(--text);line-height:1.6}
-
-/* Lista genérica */
-.b-ul{list-style:none;padding:0;margin:4px 0;display:flex;flex-direction:column;gap:7px}
-.b-ul li{padding:9px 12px 9px 12px;font-size:12.5px;background:var(--cream);border:0.5px solid rgba(107,45,139,0.08);border-radius:8px;display:flex;align-items:flex-start;gap:8px;line-height:1.5;color:var(--text)}
-.b-ul li::before{content:'';display:inline-block;min-width:16px;height:16px;background:#E1F5EE;border-radius:50%;margin-top:1px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%230F6E56' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center}
-
-/* Audio — 2 columnas */
-.b-audio-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
-.b-audio-card{background:var(--cream);border:0.5px solid rgba(107,45,139,0.1);border-radius:10px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
-.b-audio-icon{width:28px;height:28px;background:#FAEEDA;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.b-audio-content{display:flex;flex-direction:column;gap:2px}
-.b-audio-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#854F0B}
-.b-audio-text{font-size:12px;color:var(--text);line-height:1.5}
-
-/* Tips */
-.b-tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
-.b-tip-card{border-left:3px solid var(--gold);background:#FAEEDA22;border-radius:0 10px 10px 0;padding:12px 14px}
-.b-tip-title{font-size:10px;font-weight:600;color:#854F0B;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px}
-.b-tip-text{font-size:12px;color:var(--muted);line-height:1.6}
-
-/* Copy timestamps */
-.b-copy-list{display:flex;flex-direction:column;gap:7px;margin-top:4px}
-.b-copy-item{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;border:0.5px solid rgba(107,45,139,0.1);border-radius:8px;background:#fff}
-.b-copy-time{min-width:60px;font-size:10px;color:var(--purple);font-weight:600;background:#EEEDFE;border-radius:100px;padding:2px 8px;text-align:center;flex-shrink:0;margin-top:2px}
-.b-copy-text{font-size:12.5px;color:var(--text);line-height:1.5}
-
-.b-p{margin-bottom:6px;font-size:13px;line-height:1.7}
+.b-arte-card{background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:13px 14px;transition:box-shadow 0.15s}
+.b-arte-card:hover{box-shadow:0 3px 12px rgba(107,45,139,0.08)}
+.b-arte-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--purple);margin-bottom:7px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:5px}
+.b-arte-body{font-size:13px;color:var(--text);line-height:1.7}
+.b-ul{list-style:none;padding:0;margin:4px 0}
+.b-ul li{padding:4px 0 4px 18px;position:relative;font-size:13.5px;border-bottom:1px solid var(--border-soft)}
+.b-ul li:last-child{border-bottom:none}
+.b-ul li::before{content:'•';position:absolute;left:4px;color:var(--purple);font-weight:700}
+.b-p{margin-bottom:6px;font-size:13.5px}
 
 /* LOADING */
 .loading-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;padding:2.5rem}
@@ -272,8 +236,6 @@ input::placeholder{color:var(--muted)}
   .btn-row{flex-direction:column}
   .plan-grid{grid-template-columns:1fr}
   .b-arte-grid{grid-template-columns:1fr}
-  .b-tips-grid{grid-template-columns:1fr}
-  .b-audio-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -1005,17 +967,11 @@ function renderBrief(raw) {
 
 function buildSection(title, body) {
   const sec = document.createElement('div'); sec.className = 'b-section';
-  const t = title.toUpperCase();
-  const isGold = t.includes('GANCHO')||t.includes('HOOK')||t.includes('AUDIO')||t.includes('TIPS')||t.includes('COPY');
-  const icoMap = {'ANÁLISIS':'ti-package','CONCEPTO':'ti-bulb','BRIEF':'ti-video','TOMA':'ti-camera','GANCHO':'ti-hook','HOOK':'ti-hook','COPY':'ti-typography','DIRECCI':'ti-palette','ARTE':'ti-palette','AUDIO':'ti-music','CREADOR':'ti-list-check','FOTÓGRAFO':'ti-list-check','TIPS':'ti-star'};
-  const icoKey = Object.keys(icoMap).find(k => t.includes(k)) || '';
-  const icoClass = icoMap[icoKey] || 'ti-file-description';
-  const titleWrap = document.createElement('div'); titleWrap.className = 'b-title';
-  const iconEl = document.createElement('div'); iconEl.className = 'b-title-icon'+(isGold?' gold':'');
-  iconEl.innerHTML = `<i class="ti ${icoClass}" aria-hidden="true"></i>`;
-  const textEl = document.createElement('span'); textEl.className = 'b-title-text'; textEl.textContent = title;
-  titleWrap.appendChild(iconEl); titleWrap.appendChild(textEl); sec.appendChild(titleWrap);
-  const divider = document.createElement('div'); divider.className = 'b-title-divider'; sec.appendChild(divider);
+  const icoKey = Object.keys(ICONS).find(k => title.toUpperCase().includes(k)) || '';
+  const ico = ICONS[icoKey] || '✦';
+  const titleEl = document.createElement('div'); titleEl.className = 'b-title';
+  titleEl.innerHTML = `<span class="ico">${ico}</span>${title}`;
+  sec.appendChild(titleEl);
 
   const lines = body.split('\n').filter(l => l.trim());
   const isArte = title.toUpperCase().includes('DIRECCI') || title.toUpperCase().includes('ARTE');
@@ -1027,14 +983,8 @@ function buildSection(title, body) {
     lines.forEach(line => {
       if (/^—\s*[Pp]ieza\s*\d+|^—\s*[Tt]oma\s*\d+/.test(line)) {
         block = document.createElement('div'); block.className = 'b-piece';
-        const hdr = document.createElement('div'); hdr.className = 'b-piece-header';
-        const raw = line.replace(/^—\s*/,'');
-        const numMatch = raw.match(/(\d+)/);
-        const tipoMatch = raw.match(/\[([^\]]+)\]/);
-        const badge = document.createElement('span'); badge.className = 'b-piece-badge';
-        badge.textContent = 'Pieza ' + (numMatch ? numMatch[1] : ''); hdr.appendChild(badge);
-        if (tipoMatch) { const tipo = document.createElement('span'); tipo.className = 'b-piece-tipo'; tipo.textContent = tipoMatch[1]; hdr.appendChild(tipo); }
-        block.appendChild(hdr);
+        const lbl = document.createElement('div'); lbl.className = 'b-piece-label';
+        lbl.textContent = line.replace(/^—\s*/,''); block.appendChild(lbl);
         ul = document.createElement('ul'); block.appendChild(ul); sec.appendChild(block);
       } else if (ul) {
         const clean = line.replace(/^[-·]\s*/,'').trim(); if (!clean) return;
@@ -1052,6 +1002,46 @@ function buildSection(title, body) {
       d.innerHTML = `<span class="b-hook-num">${n}</span>${fmtInline(clean)}`;
       sec.appendChild(d);
     });
+  } else if (t.includes('AUDIO')) {
+    const grid = document.createElement('div'); grid.className = 'b-audio-grid';
+    const musicaLines = [], vozLines = [];
+    let isMus = true;
+    lines.forEach(line => {
+      const lower = line.toLowerCase();
+      if (lower.includes('alternativa') || lower.includes('sonido ambiente') || lower.includes('ambient')) isMus = false;
+      if (isMus) musicaLines.push(line); else vozLines.push(line);
+    });
+    const makeAudioCard = (icon, label, linesArr) => {
+      const card = document.createElement('div'); card.className = 'b-audio-card';
+      const ico = document.createElement('div'); ico.className = 'b-audio-icon'; ico.textContent = icon;
+      const cont = document.createElement('div'); cont.className = 'b-audio-content';
+      const lbl = document.createElement('div'); lbl.className = 'b-audio-label'; lbl.textContent = label;
+      const txt = document.createElement('div'); txt.className = 'b-audio-text';
+      txt.innerHTML = linesArr.map(l => fmtInline(l.replace(/^[-·]\s*/,''))).join(' ');
+      cont.appendChild(lbl); cont.appendChild(txt); card.appendChild(ico); card.appendChild(cont);
+      return card;
+    };
+    if (musicaLines.length) grid.appendChild(makeAudioCard('🎵', 'Música', musicaLines));
+    if (vozLines.length) grid.appendChild(makeAudioCard('🎙', 'Sonido / Voz', vozLines));
+    if (grid.children.length) sec.appendChild(grid);
+    else lines.forEach(line => { if (!line.trim()) return; const p = document.createElement('p'); p.className = 'b-p'; p.innerHTML = fmtInline(line); sec.appendChild(p); });
+  } else if (t.includes('COPY')) {
+    const copyList = document.createElement('div'); copyList.className = 'b-copy-list';
+    lines.forEach(line => {
+      if (!line.trim()) return;
+      const item = document.createElement('div'); item.className = 'b-copy-item';
+      const timeMatch = line.match(/\(([^)]+)\)|([Oo]verlay\s*\d+)/);
+      const timeEl = document.createElement('span'); timeEl.className = 'b-copy-time';
+      timeEl.textContent = timeMatch ? timeMatch[0].replace(/[()]/g,'') : '—';
+      const textEl = document.createElement('span'); textEl.className = 'b-copy-text';
+      textEl.innerHTML = fmtInline(line.replace(/^[-·]\s*/,'').replace(/\([^)]+\)\s*/,'').replace(/[Oo]verlay\s*\d+\s*[:\-]?\s*/,'').trim());
+      item.appendChild(timeEl); item.appendChild(textEl); copyList.appendChild(item);
+    });
+    sec.appendChild(copyList);
+  } else if (t.includes('CONCEPTO')) {
+    const concEl = document.createElement('div'); concEl.className = 'b-concepto';
+    concEl.innerHTML = fmtInline(lines.join(' '));
+    sec.appendChild(concEl);
   } else if (isArte) {
     const arteMap = { 'paleta':'🎨 Paleta de colores', 'color':'🎨 Paleta', 'prop':'🪴 Props', 'escenograf':'🪴 Escenografía', 'iluminaci':'💡 Iluminación', 'temperatura':'🌡 Temperatura', 'outfit':'👗 Outfit', 'presentaci':'👗 Presentación' };
     const grid = document.createElement('div'); grid.className = 'b-arte-grid';
@@ -1180,3 +1170,4 @@ document.getElementById('pdfBtn').addEventListener('click', () => {
 </script>
 </body>
 </html>
+
