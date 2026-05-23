@@ -61,12 +61,50 @@ body{font-family:var(--font-sans);color:var(--text);background:var(--cream);min-
 
 /* CARDS */
 .steps{display:flex;flex-direction:column;gap:1rem}
-.card{background:#fff;border:1px solid rgba(107,45,139,0.08);border-radius:var(--radius);overflow:hidden;transition:all 0.25s;box-shadow:var(--shadow-sm)}
-.card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
-.card-header{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid rgba(107,45,139,0.06);background:linear-gradient(135deg,#FAFAF8,#F8F3FC)}
-.step-num{width:26px;height:26px;background:var(--grad-purple);color:#fff;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(107,45,139,0.3)}
-.card-title{font-family:var(--font-serif);font-size:16px;font-weight:700;color:var(--navy)}
-.card-body{padding:20px}
+/* STEPPER */
+.stepper{background:#fff;border-radius:16px;padding:20px 24px;margin-bottom:1rem;box-shadow:var(--shadow-sm);border:1px solid rgba(107,45,139,0.06)}
+.stepper-track{display:flex;align-items:center;justify-content:space-between;position:relative}
+.stepper-step{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;position:relative;z-index:1}
+.stepper-circle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;transition:all 0.3s;border:2px solid rgba(107,45,139,0.15);background:#fff;color:var(--muted);cursor:default}
+.stepper-circle.active{background:var(--grad-purple);color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(107,45,139,0.35)}
+.stepper-circle.done{background:var(--purple-light);color:var(--purple);border-color:rgba(107,45,139,0.2)}
+.stepper-label{font-size:10px;font-weight:600;color:var(--muted);text-align:center;letter-spacing:0.5px;transition:color 0.3s}
+.stepper-label.active{color:var(--purple)}
+.stepper-label.done{color:var(--purple-mid)}
+.stepper-line{flex:1;height:2px;background:rgba(107,45,139,0.1);border-radius:2px;margin:0 6px;margin-bottom:22px;transition:background 0.4s}
+.stepper-line.done{background:var(--purple)}
+/* STEP PANELS */
+.step-panel{display:none;animation:fadeUp 0.25s ease}
+.step-panel.active{display:block}
+.step-card{background:#fff;border:1px solid rgba(107,45,139,0.08);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm)}
+.step-card-header{padding:18px 22px 14px;border-bottom:1px solid rgba(107,45,139,0.06)}
+.step-card-icon{font-size:28px;margin-bottom:8px}
+.step-card-title{font-family:var(--font-serif);font-size:22px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.step-card-title em{font-style:normal;background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.step-card-sub{font-size:12.5px;color:var(--muted)}
+.step-card-body{padding:22px}
+.step-footer{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-top:1px solid rgba(107,45,139,0.06);background:linear-gradient(135deg,#FAFAF8,#F8F3FC)}
+.btn-next{padding:12px 28px;background:var(--grad-purple);color:#fff;border:none;border-radius:12px;font-family:var(--font-serif);font-size:16px;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(107,45,139,0.25)}
+.btn-next:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(107,45,139,0.35)}
+.btn-back{padding:12px 18px;background:#fff;color:var(--muted);border:1px solid rgba(107,45,139,0.12);border-radius:12px;font-family:var(--font-sans);font-size:13px;cursor:pointer;transition:all 0.18s;display:flex;align-items:center;gap:6px}
+.btn-back:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-light)}
+/* UPLOAD STEP visual upgrade */
+.upload-zone-new{border:2px dashed rgba(107,45,139,0.2);border-radius:18px;padding:40px 20px;text-align:center;cursor:pointer;transition:all 0.2s;background:linear-gradient(135deg,#F8F3FC,#FBF7EE);position:relative;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.upload-zone-new:hover{border-color:var(--purple);background:linear-gradient(135deg,#F0E8F7,#F8F3FC)}
+.upload-zone-new input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-zone-new .upload-big-icon{font-size:48px;margin-bottom:14px}
+.upload-zone-new .upload-title{font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.upload-zone-new .upload-sub{font-size:13px;color:var(--muted)}
+.upload-zone-new .upload-formats{display:flex;gap:8px;margin-top:14px;justify-content:center}
+.upload-fmt{background:#fff;border:1px solid rgba(107,45,139,0.12);border-radius:8px;padding:4px 12px;font-size:11px;color:var(--muted);font-weight:500}
+.preview-wrap{position:relative;border-radius:14px;overflow:hidden;border:2px solid rgba(107,45,139,0.1);box-shadow:var(--shadow-md)}
+.preview-wrap img{width:100%;max-height:260px;object-fit:contain;display:block;background:#FAFAF8}
+.preview-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(26,10,46,0.7),transparent);padding:14px 16px;display:flex;justify-content:flex-end}
+.change-img-btn{background:rgba(255,255,255,0.95);color:var(--purple);border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font-sans)}
+/* SUMMARY CHIPS */
+.summary-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.chip{background:var(--purple-light);border:1px solid rgba(107,45,139,0.15);border-radius:100px;padding:4px 12px;font-size:11px;color:var(--purple);font-weight:500}
+.chip.gold{background:var(--gold-light);border-color:rgba(201,148,58,0.2);color:#7A5520}
 
 /* UPLOAD */
 .upload-zone{border:1.5px dashed rgba(107,45,139,0.2);border-radius:14px;padding:32px 20px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--purple-light);position:relative}
@@ -357,27 +395,78 @@ input::placeholder{color:var(--muted)}
     <p>Subí el producto, configurá tu contenido y recibí un brief listo para producir.</p>
   </div>
 
-  <div class="steps">
-
-    <!-- PASO 1 -->
-    <div class="card">
-      <div class="card-header"><div class="step-num">1</div><span class="card-title">Imagen del producto</span></div>
-      <div class="card-body">
-        <div class="upload-zone" id="uploadZone">
-          <input type="file" id="fileInput" accept="image/*">
-          <div id="uploadPrompt"><div class="upload-icon">📸</div>
-            <div class="upload-text">Arrastrá o <strong>hacé clic</strong> para subir la imagen<br><span style="font-size:11px;opacity:0.7">JPG, PNG o WEBP</span></div>
-          </div>
-          <img id="previewImg" class="preview-img" style="display:none">
-        </div>
-        <div id="changeWrap" style="text-align:center;display:none"><span class="change-img" id="changeImg">Cambiar imagen</span></div>
+  <!-- STEPPER -->
+  <div class="stepper">
+    <div class="stepper-track">
+      <div class="stepper-step">
+        <div class="stepper-circle active" id="sc1">1</div>
+        <span class="stepper-label active" id="sl1">Producto</span>
+      </div>
+      <div class="stepper-line" id="sline1"></div>
+      <div class="stepper-step">
+        <div class="stepper-circle" id="sc2">2</div>
+        <span class="stepper-label" id="sl2">Formato</span>
+      </div>
+      <div class="stepper-line" id="sline2"></div>
+      <div class="stepper-step">
+        <div class="stepper-circle" id="sc3">3</div>
+        <span class="stepper-label" id="sl3">Objetivo</span>
+      </div>
+      <div class="stepper-line" id="sline3"></div>
+      <div class="stepper-step">
+        <div class="stepper-circle" id="sc4">4</div>
+        <span class="stepper-label" id="sl4">Estilo</span>
       </div>
     </div>
+  </div>
 
-    <!-- PASO 2 -->
-    <div class="card">
-      <div class="card-header"><div class="step-num">2</div><span class="card-title" id="step2Title">Tipo de contenido</span></div>
-      <div class="card-body">
+  <!-- PASO 1 -->
+  <div class="step-panel active" id="panel1">
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-card-icon">📸</div>
+        <div class="step-card-title">Subí la imagen del <em>producto</em></div>
+        <div class="step-card-sub">La IA analiza la imagen para crear un brief personalizado</div>
+      </div>
+      <div class="step-card-body">
+        <div class="upload-zone-new" id="uploadZone">
+          <input type="file" id="fileInput" accept="image/*">
+          <div id="uploadPrompt">
+            <div class="upload-big-icon">🖼</div>
+            <div class="upload-title">Arrastrá o hacé clic</div>
+            <div class="upload-sub">para subir la foto del producto</div>
+            <div class="upload-formats">
+              <span class="upload-fmt">JPG</span>
+              <span class="upload-fmt">PNG</span>
+              <span class="upload-fmt">WEBP</span>
+            </div>
+          </div>
+          <div id="previewWrap" style="display:none;width:100%">
+            <div class="preview-wrap">
+              <img id="previewImg" style="width:100%;max-height:260px;object-fit:contain;display:block;background:#FAFAF8">
+              <div class="preview-overlay">
+                <button class="change-img-btn" id="changeImg">Cambiar imagen</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step-footer">
+        <span style="font-size:12px;color:var(--muted)">Paso 1 de 4</span>
+        <button class="btn-next" id="next1">Continuar →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASO 2 -->
+  <div class="step-panel" id="panel2">
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-card-icon">🎬</div>
+        <div class="step-card-title">¿Qué tipo de <em>contenido</em>?</div>
+        <div class="step-card-sub">Elegí el formato y la cantidad de piezas</div>
+      </div>
+      <div class="step-card-body">
         <div class="param-grid">
           <div class="full">
             <span class="param-label">Formato</span>
@@ -415,7 +504,7 @@ input::placeholder{color:var(--muted)}
           <div class="full subparam" id="subStory">
             <div class="story-info">📱 <strong>Story:</strong> máximo 15 segundos · Formato vertical 9:16</div>
           </div>
-          <div>
+          <div class="full">
             <span class="param-label">Cantidad de piezas</span>
             <div class="counter-row">
               <button class="counter-btn" id="minusBtn">−</button>
@@ -423,15 +512,24 @@ input::placeholder{color:var(--muted)}
               <button class="counter-btn" id="plusBtn">+</button>
             </div>
           </div>
-
         </div>
       </div>
+      <div class="step-footer">
+        <button class="btn-back" id="back2">← Volver</button>
+        <button class="btn-next" id="next2">Continuar →</button>
+      </div>
     </div>
+  </div>
 
-    <!-- PASO 3 -->
-    <div class="card">
-      <div class="card-header"><div class="step-num">3</div><span class="card-title" id="step3Title">Objetivo y plataforma</span></div>
-      <div class="card-body">
+  <!-- PASO 3 -->
+  <div class="step-panel" id="panel3">
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-card-icon">🎯</div>
+        <div class="step-card-title">¿Cuál es el <em>objetivo</em>?</div>
+        <div class="step-card-sub">Definí la plataforma y el fin del contenido</div>
+      </div>
+      <div class="step-card-body">
         <div class="param-grid">
           <div>
             <span class="param-label">Objetivo</span>
@@ -457,12 +555,22 @@ input::placeholder{color:var(--muted)}
           </div>
         </div>
       </div>
+      <div class="step-footer">
+        <button class="btn-back" id="back3">← Volver</button>
+        <button class="btn-next" id="next3">Continuar →</button>
+      </div>
     </div>
+  </div>
 
-    <!-- PASO 4 -->
-    <div class="card">
-      <div class="card-header"><div class="step-num">4</div><span class="card-title">Estilo y contexto</span></div>
-      <div class="card-body">
+  <!-- PASO 4 -->
+  <div class="step-panel" id="panel4">
+    <div class="step-card">
+      <div class="step-card-header">
+        <div class="step-card-icon">✨</div>
+        <div class="step-card-title">Estilo y <em>contexto</em></div>
+        <div class="step-card-sub">Últimos detalles para personalizar tu brief</div>
+      </div>
+      <div class="step-card-body">
         <div class="param-grid">
           <div class="full">
             <span class="param-label">Estilo UGC</span>
@@ -481,14 +589,13 @@ input::placeholder{color:var(--muted)}
           <div class="full"><span class="param-label">Público objetivo (opcional)</span><input type="text" id="publico" placeholder="ej: mujeres 25-40, mamás millennials"></div>
           <div class="full"><span class="param-label">Qué evitar o incluir (opcional)</span><input type="text" id="extras" placeholder="ej: evitar mostrar precio, incluir antes/después"></div>
         </div>
-        <div class="btn-row">
-          <button class="gen-btn" id="genBtn">✦ Generar brief creativo</button>
-          <button class="reset-btn" id="resetBtn">↺ Nueva</button>
-        </div>
         <div class="error-msg" id="errMsg"></div>
       </div>
+      <div class="step-footer">
+        <button class="btn-back" id="back4">← Volver</button>
+        <button class="btn-next gen-btn" id="genBtn" style="font-size:16px;padding:12px 28px">✦ Generar brief</button>
+      </div>
     </div>
-
   </div>
 
   <!-- RESULT -->
@@ -496,6 +603,7 @@ input::placeholder{color:var(--muted)}
     <div class="result-top">
       <span class="result-label"><div class="gem-gold"></div>Brief creativo listo</span>
       <div class="result-actions">
+        <button class="action-btn" id="resetBtn" style="border:1px solid rgba(107,45,139,0.2);background:rgba(107,45,139,0.06);color:var(--purple)" onclick="resetAll()">↺ Nuevo</button>
         <button class="action-btn copy-btn" id="copyBtn">Copiar</button>
         <button class="action-btn pdf-btn" id="pdfCreadorBtn">⬇ PDF Creador</button>
         <button class="action-btn pdf-btn pdf-marca-btn" id="pdfMarcaBtn" style="display:none">⬇ PDF Marca</button>
@@ -697,6 +805,50 @@ document.getElementById('fbSubmit').addEventListener('click', async () => {
   if (pendingPayload) { pendingFeedback = false; doGenerate(pendingPayload); pendingPayload = null; }
 });
 
+
+// ── STEPPER ──
+let currentStep = 1;
+
+function goToStep(n) {
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById('panel'+i).classList.toggle('active', i === n);
+    const circle = document.getElementById('sc'+i);
+    const label = document.getElementById('sl'+i);
+    circle.classList.remove('active','done');
+    label.classList.remove('active','done');
+    if (i < n) { circle.classList.add('done'); circle.textContent = '✓'; label.classList.add('done'); }
+    else if (i === n) { circle.classList.add('active'); circle.textContent = i; label.classList.add('active'); }
+    else { circle.textContent = i; }
+    if (i < 4) {
+      const line = document.getElementById('sline'+i);
+      if (line) line.classList.toggle('done', i < n);
+    }
+  }
+  currentStep = n;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('next1').addEventListener('click', () => {
+  if (!imgBase64) {
+    const errEl = document.getElementById('errMsg');
+    // mostrar error visual en paso 1
+    const zone = document.getElementById('uploadZone');
+    zone.style.borderColor = '#E24B4A';
+    setTimeout(() => zone.style.borderColor = '', 2000);
+    return;
+  }
+  goToStep(2);
+});
+
+document.getElementById('next2').addEventListener('click', () => goToStep(3));
+document.getElementById('next3').addEventListener('click', () => goToStep(4));
+
+document.getElementById('back2').addEventListener('click', () => goToStep(1));
+document.getElementById('back3').addEventListener('click', () => goToStep(2));
+document.getElementById('back4').addEventListener('click', () => goToStep(3));
+
+// Reset btn ahora es el botón de nueva desde el resultado
+
 // ── FORMAT SWITCH ──
 function switchTipo(type) {
   tipoType = type;
@@ -775,27 +927,27 @@ function handleFile(file) {
   reader.onload = e => {
     imgBase64 = e.target.result.split(',')[1];
     const img = document.getElementById('previewImg');
-    img.src = e.target.result; img.style.display = 'block';
+    img.src = e.target.result;
     document.getElementById('uploadPrompt').style.display = 'none';
-    document.getElementById('changeWrap').style.display = 'block';
+    document.getElementById('previewWrap').style.display = 'block';
   };
   reader.readAsDataURL(file);
 }
 document.getElementById('fileInput').addEventListener('change', function() { handleFile(this.files[0]); });
-document.getElementById('changeImg').addEventListener('click', () => document.getElementById('fileInput').click());
+document.getElementById('changeImg').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('fileInput').click(); });
 const zone = document.getElementById('uploadZone');
 zone.addEventListener('dragover', e => { e.preventDefault(); zone.style.borderColor = 'var(--purple)'; });
 zone.addEventListener('dragleave', () => { zone.style.borderColor = ''; });
 zone.addEventListener('drop', e => { e.preventDefault(); zone.style.borderColor = ''; handleFile(e.dataTransfer.files[0]); });
 
 // ── RESET ──
-document.getElementById('resetBtn').addEventListener('click', () => {
+function resetAll() {
   imgBase64 = null; cantidad = 1; briefRaw = '';
   document.getElementById('previewImg').style.display = 'none';
-  document.getElementById('uploadPrompt').style.display = 'block';
-  document.getElementById('changeWrap').style.display = 'none';
+  document.getElementById('previewWrap').style.display = 'none';
+  document.getElementById('uploadPrompt').style.display = '';
   document.getElementById('cantVal').textContent = '1';
-  ['cliente','producto','publico','extras'].forEach(id => document.getElementById(id).value = '');
+  ['producto','publico','extras'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   document.getElementById('resultCard').classList.remove('visible');
   document.getElementById('errMsg').classList.remove('visible');
   document.getElementById('briefEl').innerHTML = '';
@@ -808,8 +960,8 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   document.querySelector('#platPills .pill').classList.add('active');
   document.querySelector('#formatoPills .pill').classList.add('active');
   switchTipo('video');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
+  goToStep(1);
+}
 
 // ── BUILD PROMPT ──
 function buildPrompt() {
