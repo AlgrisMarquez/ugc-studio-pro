@@ -829,6 +829,7 @@ function goToStep(n) {
 }
 
 document.getElementById('next1').addEventListener('click', () => {
+  applyPlanLocks();
   if (!imgBase64) {
     const errEl = document.getElementById('errMsg');
     // mostrar error visual en paso 1
@@ -851,6 +852,7 @@ document.getElementById('back4').addEventListener('click', () => goToStep(3));
 
 // ── FORMAT SWITCH ──
 function switchTipo(type) {
+  if (userStatus) applyPlanLocks();
   tipoType = type;
   ['subVideo','subFoto','subCarrusel','subStory'].forEach(id => document.getElementById(id).classList.remove('visible'));
   ({ video:'subVideo', foto:'subFoto', carrusel:'subCarrusel', story:'subStory' })[type] && document.getElementById(({ video:'subVideo', foto:'subFoto', carrusel:'subCarrusel', story:'subStory' })[type]).classList.add('visible');
@@ -1385,8 +1387,21 @@ function buildPdfCreadorHTML(raw) {
     if (tk.includes('CONCEPTO')) {
       bodyHTML = `<div style="background:#F8F3FC;border-left:3px solid #6B2D8B;border-radius:0 6px 6px 0;padding:10px 14px;font-size:11px;color:#1A0A2E;line-height:1.6;font-style:italic">${lines.join(' ')}</div>`;
     } else if (tk.includes('ANÁLISIS')) {
-      const cats = [['Categoría',0],['Propuesta',1],['Oportunidades',2]];
-      bodyHTML = lines.map((l,i) => `<div style="background:#FAFAF8;border:0.5px solid rgba(107,45,139,0.1);border-radius:6px;padding:8px 10px;margin-bottom:6px"><div style="font-size:8px;font-weight:700;color:#6B2D8B;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">${i===0?'Categoría':i===1?'Propuesta visual':'Oportunidades'}</div><div style="font-size:10.5px;color:#1A0A2E;line-height:1.5">${l.replace(/^[-·]\s*/,'')}</div></div>`).join('');
+      const labelMap = ['Categoría','Propuesta visual','Oportunidades para video'];
+      // Agrupar líneas por prefijo semántico
+      const analisisGroups = {};
+      const analisisOrder = [];
+      for (const line of lines) {
+        const lower = line.toLowerCase();
+        let key = null;
+        if (lower.includes('categoría') || lower.startsWith('producto') || lower.startsWith('- producto')) key = 'Categoría';
+        else if (lower.includes('propuesta visual') || lower.includes('propuesta:')) key = 'Propuesta visual';
+        else if (lower.includes('oportunidades') || lower.includes('para video')) key = 'Oportunidades para video';
+        else key = analisisOrder[analisisOrder.length-1] || 'Descripción';
+        if (!analisisGroups[key]) { analisisGroups[key] = []; analisisOrder.push(key); }
+        analisisGroups[key].push(line.replace(/^[-·]\s*/,'').replace(/^[^:]+:\s*/,'').trim());
+      }
+      bodyHTML = Object.entries(analisisGroups).map(([lbl,txts]) => `<div style="background:#FAFAF8;border:0.5px solid rgba(107,45,139,0.1);border-radius:6px;padding:8px 10px;margin-bottom:6px"><div style="font-size:8px;font-weight:700;color:#6B2D8B;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">${lbl}</div><div style="font-size:10.5px;color:#1A0A2E;line-height:1.5">${txts.join(' ')}</div></div>`).join('');
     } else if ((tk.includes('BRIEF') && tk.includes('PIEZA')) || tk.includes('TOMA')) {
       let pHTML = ''; let inPiece = false; let items = [];
       const flush = (badge, tipo, its) => {
@@ -1405,7 +1420,16 @@ function buildPdfCreadorHTML(raw) {
       let n=0;
       bodyHTML = lines.map(l=>{const c=l.replace(/^\d+[\.\)]\s*/,'').replace(/^[-·]\s*/,'').trim();if(!c)return'';n++;return`<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 10px;border:0.5px solid rgba(107,45,139,0.1);border-radius:6px;background:#fff;margin-bottom:5px"><span style="width:16px;height:16px;background:#6B2D8B;color:#fff;border-radius:50%;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${n}</span><span style="font-size:10px;color:#1A0A2E;line-height:1.5">${c}</span></div>`;}).join('');
     } else if (tk.includes('COPY')) {
-      bodyHTML = lines.map(l=>{const tm=l.match(/\(([^)]+)\)|([Oo]verlay\s*\d+)/);const time=tm?tm[0].replace(/[()]/g,''):'—';const txt=l.replace(/^[-·]\s*/,'').replace(/\([^)]+\)\s*/,'').replace(/[Oo]verlay\s*\d+\s*[:\-]?\s*/,'').trim();return`<div style="display:flex;align-items:flex-start;gap:8px;padding:5px 8px;border:0.5px solid rgba(107,45,139,0.1);border-radius:6px;margin-bottom:4px"><span style="min-width:50px;font-size:8px;color:#6B2D8B;font-weight:700;background:#EEEDFE;border-radius:100px;padding:2px 6px;text-align:center;flex-shrink:0">${time}</span><span style="font-size:10px;color:#1A0A2E;line-height:1.5">${txt}</span></div>`;}).join('');
+      bodyHTML = lines.filter(l => {
+        const clean = l.replace(/^[-·✦]\s*/,'').trim();
+        return clean.length > 3; // filtrar líneas muy cortas o símbolos solos
+      }).map(l=>{
+        const tm=l.match(/\(([^)]+seg[^)]*|\d+[-–]\d+[^)]*)\)|([Oo]verlay\s*\d+)/i);
+        const time=tm?tm[0].replace(/[()]/g,''):'—';
+        const txt=l.replace(/^[-·✦]\s*/,'').replace(/\([^)]+\)\s*/,'').replace(/[Oo]verlay\s*\d+\s*[:\-]?\s*/i,'').trim();
+        if(!txt||txt.length<2) return '';
+        return `<div style="display:flex;align-items:flex-start;gap:8px;padding:5px 8px;border:0.5px solid rgba(107,45,139,0.1);border-radius:6px;margin-bottom:4px"><span style="min-width:52px;font-size:8px;color:#6B2D8B;font-weight:700;background:#EEEDFE;border-radius:100px;padding:2px 6px;text-align:center;flex-shrink:0">${time}</span><span style="font-size:10px;color:#1A0A2E;line-height:1.5">${txt}</span></div>`;
+      }).join('');
     } else if (tk.includes('DIRECCI') || tk.includes('ARTE')) {
       const arteMap={'paleta':'Paleta y fondos','color':'Paleta','prop':'Props','escenograf':'Escenografía','iluminaci':'Iluminación','temperatura':'Temperatura','outfit':'Outfit','presentaci':'Presentación'};
       const cards={};
@@ -1420,8 +1444,24 @@ function buildPdfCreadorHTML(raw) {
       bodyHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${cardArr.map(c=>`<div style="background:#FAFAF8;border:0.5px solid rgba(107,45,139,0.1);border-radius:6px;padding:8px 10px"><div style="font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6B2D8B;margin-bottom:3px">${c.label}</div><div style="font-size:10px;color:#1A0A2E;line-height:1.5">${c.text}</div></div>`).join('')}</div>`;
     } else if (tk.includes('AUDIO')) {
       const musLines=[],altLines=[];let isMus=true;
-      for(const l of lines){if(l.toLowerCase().includes('alternativa')||l.toLowerCase().includes('opción 2'))isMus=false;(isMus?musLines:altLines).push(l.replace(/^[-·]\s*/,''));}
-      bodyHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="background:#FAFAF8;border:0.5px solid rgba(107,45,139,0.1);border-radius:6px;padding:8px 10px;display:flex;gap:6px"><span style="font-size:14px;flex-shrink:0">🎵</span><div><div style="font-size:8px;font-weight:700;color:#854F0B;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">Música</div><div style="font-size:10px;color:#1A0A2E;line-height:1.5">${musLines.join(' ')}</div></div></div><div style="background:#FAFAF8;border:0.5px solid rgba(107,45,139,0.1);border-radius:6px;padding:8px 10px;display:flex;gap:6px"><span style="font-size:14px;flex-shrink:0">🎙</span><div><div style="font-size:8px;font-weight:700;color:#854F0B;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">Alternativa</div><div style="font-size:10px;color:#1A0A2E;line-height:1.5">${altLines.join(' ')}</div></div></div></div>`;
+      for(const l of lines){
+        const low=l.toLowerCase();
+        if(low.includes('alternativa')||low.includes('opción 2')||low.includes('opcion 2')||low.includes('recomendación')||low.includes('recomendacion')) isMus=false;
+        const clean=l.replace(/^[-·]\s*/,'').replace(/^(opción\s*\d+|alternativa|recomendación)[:\s]*/i,'').trim();
+        if(clean)(isMus?musLines:altLines).push(clean);
+      }
+      const musText=musLines.join(' ');
+      const altText=altLines.join(' ');
+      bodyHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="background:#FAFAF8;border:0.5px solid rgba(107,45,139,0.1);border-radius:6px;padding:8px 10px;display:flex;gap:6px">
+          <span style="font-size:14px;flex-shrink:0">🎵</span>
+          <div><div style="font-size:8px;font-weight:700;color:#854F0B;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">Música</div><div style="font-size:10px;color:#1A0A2E;line-height:1.5">${musText}</div></div>
+        </div>
+        <div style="background:#FAFAF8;border:0.5px solid rgba(107,45,139,0.1);border-radius:6px;padding:8px 10px;display:flex;gap:6px">
+          <span style="font-size:14px;flex-shrink:0">🎙</span>
+          <div><div style="font-size:8px;font-weight:700;color:#854F0B;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">Sonido / Voz</div><div style="font-size:10px;color:#1A0A2E;line-height:1.5">${altText||'Audio ambiente natural y voz de la creadora como protagonista'}</div></div>
+        </div>
+      </div>`;
     } else if (tk.includes('CREADOR') || tk.includes('FOTÓGRAFO')) {
       bodyHTML=lines.map(l=>{const c=l.replace(/^[-·•]\s*/,'').trim();if(!c)return'';return`<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 10px;background:#FAFAF8;border:0.5px solid rgba(107,45,139,0.08);border-radius:6px;margin-bottom:4px"><div style="width:14px;height:14px;background:#E1F5EE;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#0F6E56;font-size:9px;margin-top:1px">✓</div><div style="font-size:10px;color:#1A0A2E;line-height:1.5">${c}</div></div>`;}).join('');
     } else if (tk.includes('TIPS')) {
