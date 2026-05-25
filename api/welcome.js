@@ -141,7 +141,7 @@ module.exports = async function handler(req, res) {
         'Authorization': `Bearer ${RESEND_KEY}`
       },
       body: JSON.stringify({
-        from: 'Algris Márquez · UGC Studio <onboarding@resend.dev>',
+        from: 'Algris Márquez · UGC Studio <hola@algrismarquez.com>',
         to: [email],
         subject: '✦ Bienvenida a UGC Studio — Tu acceso está listo',
         html

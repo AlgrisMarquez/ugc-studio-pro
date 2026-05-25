@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -61,50 +60,12 @@ body{font-family:var(--font-sans);color:var(--text);background:var(--cream);min-
 
 /* CARDS */
 .steps{display:flex;flex-direction:column;gap:1rem}
-/* STEPPER */
-.stepper{background:#fff;border-radius:16px;padding:20px 24px;margin-bottom:1rem;box-shadow:var(--shadow-sm);border:1px solid rgba(107,45,139,0.06)}
-.stepper-track{display:flex;align-items:center;justify-content:space-between;position:relative}
-.stepper-step{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;position:relative;z-index:1}
-.stepper-circle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;transition:all 0.3s;border:2px solid rgba(107,45,139,0.15);background:#fff;color:var(--muted);cursor:default}
-.stepper-circle.active{background:var(--grad-purple);color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(107,45,139,0.35)}
-.stepper-circle.done{background:var(--purple-light);color:var(--purple);border-color:rgba(107,45,139,0.2)}
-.stepper-label{font-size:10px;font-weight:600;color:var(--muted);text-align:center;letter-spacing:0.5px;transition:color 0.3s}
-.stepper-label.active{color:var(--purple)}
-.stepper-label.done{color:var(--purple-mid)}
-.stepper-line{flex:1;height:2px;background:rgba(107,45,139,0.1);border-radius:2px;margin:0 6px;margin-bottom:22px;transition:background 0.4s}
-.stepper-line.done{background:var(--purple)}
-/* STEP PANELS */
-.step-panel{display:none;animation:fadeUp 0.25s ease}
-.step-panel.active{display:block}
-.step-card{background:#fff;border:1px solid rgba(107,45,139,0.08);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm)}
-.step-card-header{padding:18px 22px 14px;border-bottom:1px solid rgba(107,45,139,0.06)}
-.step-card-icon{font-size:28px;margin-bottom:8px}
-.step-card-title{font-family:var(--font-serif);font-size:22px;font-weight:700;color:var(--navy);margin-bottom:4px}
-.step-card-title em{font-style:normal;background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.step-card-sub{font-size:12.5px;color:var(--muted)}
-.step-card-body{padding:22px}
-.step-footer{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-top:1px solid rgba(107,45,139,0.06);background:linear-gradient(135deg,#FAFAF8,#F8F3FC)}
-.btn-next{padding:12px 28px;background:var(--grad-purple);color:#fff;border:none;border-radius:12px;font-family:var(--font-serif);font-size:16px;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(107,45,139,0.25)}
-.btn-next:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(107,45,139,0.35)}
-.btn-back{padding:12px 18px;background:#fff;color:var(--muted);border:1px solid rgba(107,45,139,0.12);border-radius:12px;font-family:var(--font-sans);font-size:13px;cursor:pointer;transition:all 0.18s;display:flex;align-items:center;gap:6px}
-.btn-back:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-light)}
-/* UPLOAD STEP visual upgrade */
-.upload-zone-new{border:2px dashed rgba(107,45,139,0.2);border-radius:18px;padding:40px 20px;text-align:center;cursor:pointer;transition:all 0.2s;background:linear-gradient(135deg,#F8F3FC,#FBF7EE);position:relative;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.upload-zone-new:hover{border-color:var(--purple);background:linear-gradient(135deg,#F0E8F7,#F8F3FC)}
-.upload-zone-new input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.upload-zone-new .upload-big-icon{font-size:48px;margin-bottom:14px}
-.upload-zone-new .upload-title{font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--navy);margin-bottom:6px}
-.upload-zone-new .upload-sub{font-size:13px;color:var(--muted)}
-.upload-zone-new .upload-formats{display:flex;gap:8px;margin-top:14px;justify-content:center}
-.upload-fmt{background:#fff;border:1px solid rgba(107,45,139,0.12);border-radius:8px;padding:4px 12px;font-size:11px;color:var(--muted);font-weight:500}
-.preview-wrap{position:relative;border-radius:14px;overflow:hidden;border:2px solid rgba(107,45,139,0.1);box-shadow:var(--shadow-md)}
-.preview-wrap img{width:100%;max-height:260px;object-fit:contain;display:block;background:#FAFAF8}
-.preview-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(26,10,46,0.7),transparent);padding:14px 16px;display:flex;justify-content:flex-end}
-.change-img-btn{background:rgba(255,255,255,0.95);color:var(--purple);border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font-sans)}
-/* SUMMARY CHIPS */
-.summary-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
-.chip{background:var(--purple-light);border:1px solid rgba(107,45,139,0.15);border-radius:100px;padding:4px 12px;font-size:11px;color:var(--purple);font-weight:500}
-.chip.gold{background:var(--gold-light);border-color:rgba(201,148,58,0.2);color:#7A5520}
+.card{background:#fff;border:1px solid rgba(107,45,139,0.08);border-radius:var(--radius);overflow:hidden;transition:all 0.25s;box-shadow:var(--shadow-sm)}
+.card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.card-header{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid rgba(107,45,139,0.06);background:linear-gradient(135deg,#FAFAF8,#F8F3FC)}
+.step-num{width:26px;height:26px;background:var(--grad-purple);color:#fff;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(107,45,139,0.3)}
+.card-title{font-family:var(--font-serif);font-size:16px;font-weight:700;color:var(--navy)}
+.card-body{padding:20px}
 
 /* UPLOAD */
 .upload-zone{border:1.5px dashed rgba(107,45,139,0.2);border-radius:14px;padding:32px 20px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--purple-light);position:relative}
@@ -349,26 +310,6 @@ input::placeholder{color:var(--muted)}
   </div>
 </div>
 
-
-<!-- MARCA MODAL -->
-<div class="overlay hidden" id="marcaOverlay">
-  <div class="marca-modal">
-    <h3>PDF para la marca ✦</h3>
-    <p>Completá los datos para personalizar la propuesta.</p>
-    <div class="marca-field"><label>Tu nombre (creadora)</label><input type="text" id="marcaNombre" placeholder="ej: Valentina Ruiz"></div>
-    <div class="marca-field"><label>Nombre de la marca / cliente</label><input type="text" id="marcaCliente" placeholder="ej: Regal, Solaris SPF"></div>
-    <div class="marca-field"><label>Fecha de entrega</label><input type="text" id="marcaFecha" placeholder="ej: 30 de junio, 2026"></div>
-    <div class="marca-field"><label>Notas para la marca (opcional)</label><textarea id="marcaNotas" placeholder="ej: Disponible para revisión previa..."></textarea></div>
-    <div class="marca-actions">
-      <button class="marca-cancel" id="marcaCancel">Cancelar</button>
-      <button class="marca-submit" id="marcaSubmit">Generar PDF ✦</button>
-    </div>
-  </div>
-</div>
-
-<!-- HIDDEN PDF RENDER AREA -->
-<div class="pdf-render-wrap" id="pdfRenderWrap"></div>
-
 <div class="app">
 
   <!-- USER BAR -->
@@ -395,78 +336,27 @@ input::placeholder{color:var(--muted)}
     <p>Subí el producto, configurá tu contenido y recibí un brief listo para producir.</p>
   </div>
 
-  <!-- STEPPER -->
-  <div class="stepper">
-    <div class="stepper-track">
-      <div class="stepper-step">
-        <div class="stepper-circle active" id="sc1">1</div>
-        <span class="stepper-label active" id="sl1">Producto</span>
-      </div>
-      <div class="stepper-line" id="sline1"></div>
-      <div class="stepper-step">
-        <div class="stepper-circle" id="sc2">2</div>
-        <span class="stepper-label" id="sl2">Formato</span>
-      </div>
-      <div class="stepper-line" id="sline2"></div>
-      <div class="stepper-step">
-        <div class="stepper-circle" id="sc3">3</div>
-        <span class="stepper-label" id="sl3">Objetivo</span>
-      </div>
-      <div class="stepper-line" id="sline3"></div>
-      <div class="stepper-step">
-        <div class="stepper-circle" id="sc4">4</div>
-        <span class="stepper-label" id="sl4">Estilo</span>
-      </div>
-    </div>
-  </div>
+  <div class="steps">
 
-  <!-- PASO 1 -->
-  <div class="step-panel active" id="panel1">
-    <div class="step-card">
-      <div class="step-card-header">
-        <div class="step-card-icon">📸</div>
-        <div class="step-card-title">Subí la imagen del <em>producto</em></div>
-        <div class="step-card-sub">La IA analiza la imagen para crear un brief personalizado</div>
-      </div>
-      <div class="step-card-body">
-        <div class="upload-zone-new" id="uploadZone">
+    <!-- PASO 1 -->
+    <div class="card">
+      <div class="card-header"><div class="step-num">1</div><span class="card-title">Imagen del producto</span></div>
+      <div class="card-body">
+        <div class="upload-zone" id="uploadZone">
           <input type="file" id="fileInput" accept="image/*">
-          <div id="uploadPrompt">
-            <div class="upload-big-icon">🖼</div>
-            <div class="upload-title">Arrastrá o hacé clic</div>
-            <div class="upload-sub">para subir la foto del producto</div>
-            <div class="upload-formats">
-              <span class="upload-fmt">JPG</span>
-              <span class="upload-fmt">PNG</span>
-              <span class="upload-fmt">WEBP</span>
-            </div>
+          <div id="uploadPrompt"><div class="upload-icon">📸</div>
+            <div class="upload-text">Arrastrá o <strong>hacé clic</strong> para subir la imagen<br><span style="font-size:11px;opacity:0.7">JPG, PNG o WEBP</span></div>
           </div>
-          <div id="previewWrap" style="display:none;width:100%">
-            <div class="preview-wrap">
-              <img id="previewImg" style="width:100%;max-height:260px;object-fit:contain;display:block;background:#FAFAF8">
-              <div class="preview-overlay">
-                <button class="change-img-btn" id="changeImg">Cambiar imagen</button>
-              </div>
-            </div>
-          </div>
+          <img id="previewImg" class="preview-img" style="display:none">
         </div>
-      </div>
-      <div class="step-footer">
-        <span style="font-size:12px;color:var(--muted)">Paso 1 de 4</span>
-        <button class="btn-next" id="next1">Continuar →</button>
+        <div id="changeWrap" style="text-align:center;display:none"><span class="change-img" id="changeImg">Cambiar imagen</span></div>
       </div>
     </div>
-  </div>
 
-  <!-- PASO 2 -->
-  <div class="step-panel" id="panel2">
-    <div class="step-card">
-      <div class="step-card-header">
-        <div class="step-card-icon">🎬</div>
-        <div class="step-card-title">¿Qué tipo de <em>contenido</em>?</div>
-        <div class="step-card-sub">Elegí el formato y la cantidad de piezas</div>
-      </div>
-      <div class="step-card-body">
+    <!-- PASO 2 -->
+    <div class="card">
+      <div class="card-header"><div class="step-num">2</div><span class="card-title" id="step2Title">Tipo de contenido</span></div>
+      <div class="card-body">
         <div class="param-grid">
           <div class="full">
             <span class="param-label">Formato</span>
@@ -504,7 +394,7 @@ input::placeholder{color:var(--muted)}
           <div class="full subparam" id="subStory">
             <div class="story-info">📱 <strong>Story:</strong> máximo 15 segundos · Formato vertical 9:16</div>
           </div>
-          <div class="full">
+          <div>
             <span class="param-label">Cantidad de piezas</span>
             <div class="counter-row">
               <button class="counter-btn" id="minusBtn">−</button>
@@ -512,24 +402,18 @@ input::placeholder{color:var(--muted)}
               <button class="counter-btn" id="plusBtn">+</button>
             </div>
           </div>
+          <div>
+            <span class="param-label">Brief para (cliente)</span>
+            <input type="text" id="cliente" placeholder="ej: Marca Glow, Laura Torres…">
+          </div>
         </div>
       </div>
-      <div class="step-footer">
-        <button class="btn-back" id="back2">← Volver</button>
-        <button class="btn-next" id="next2">Continuar →</button>
-      </div>
     </div>
-  </div>
 
-  <!-- PASO 3 -->
-  <div class="step-panel" id="panel3">
-    <div class="step-card">
-      <div class="step-card-header">
-        <div class="step-card-icon">🎯</div>
-        <div class="step-card-title">¿Cuál es el <em>objetivo</em>?</div>
-        <div class="step-card-sub">Definí la plataforma y el fin del contenido</div>
-      </div>
-      <div class="step-card-body">
+    <!-- PASO 3 -->
+    <div class="card">
+      <div class="card-header"><div class="step-num">3</div><span class="card-title" id="step3Title">Objetivo y plataforma</span></div>
+      <div class="card-body">
         <div class="param-grid">
           <div>
             <span class="param-label">Objetivo</span>
@@ -555,22 +439,12 @@ input::placeholder{color:var(--muted)}
           </div>
         </div>
       </div>
-      <div class="step-footer">
-        <button class="btn-back" id="back3">← Volver</button>
-        <button class="btn-next" id="next3">Continuar →</button>
-      </div>
     </div>
-  </div>
 
-  <!-- PASO 4 -->
-  <div class="step-panel" id="panel4">
-    <div class="step-card">
-      <div class="step-card-header">
-        <div class="step-card-icon">✨</div>
-        <div class="step-card-title">Estilo y <em>contexto</em></div>
-        <div class="step-card-sub">Últimos detalles para personalizar tu brief</div>
-      </div>
-      <div class="step-card-body">
+    <!-- PASO 4 -->
+    <div class="card">
+      <div class="card-header"><div class="step-num">4</div><span class="card-title">Estilo y contexto</span></div>
+      <div class="card-body">
         <div class="param-grid">
           <div class="full">
             <span class="param-label">Estilo UGC</span>
@@ -589,13 +463,14 @@ input::placeholder{color:var(--muted)}
           <div class="full"><span class="param-label">Público objetivo (opcional)</span><input type="text" id="publico" placeholder="ej: mujeres 25-40, mamás millennials"></div>
           <div class="full"><span class="param-label">Qué evitar o incluir (opcional)</span><input type="text" id="extras" placeholder="ej: evitar mostrar precio, incluir antes/después"></div>
         </div>
+        <div class="btn-row">
+          <button class="gen-btn" id="genBtn">✦ Generar brief creativo</button>
+          <button class="reset-btn" id="resetBtn">↺ Nueva</button>
+        </div>
         <div class="error-msg" id="errMsg"></div>
       </div>
-      <div class="step-footer">
-        <button class="btn-back" id="back4">← Volver</button>
-        <button class="btn-next gen-btn" id="genBtn" style="font-size:16px;padding:12px 28px">✦ Generar brief</button>
-      </div>
     </div>
+
   </div>
 
   <!-- RESULT -->
@@ -603,10 +478,8 @@ input::placeholder{color:var(--muted)}
     <div class="result-top">
       <span class="result-label"><div class="gem-gold"></div>Brief creativo listo</span>
       <div class="result-actions">
-        <button class="action-btn" id="resetBtn" style="border:1px solid rgba(107,45,139,0.2);background:rgba(107,45,139,0.06);color:var(--purple)" onclick="resetAll()">↺ Nuevo</button>
         <button class="action-btn copy-btn" id="copyBtn">Copiar</button>
-        <button class="action-btn pdf-btn" id="pdfCreadorBtn">⬇ PDF Creador</button>
-        <button class="action-btn pdf-btn pdf-marca-btn" id="pdfMarcaBtn" style="display:none">⬇ PDF Marca</button>
+        <button class="action-btn pdf-btn" id="pdfBtn">⬇ PDF</button>
       </div>
     </div>
     <div class="result-body">
@@ -696,8 +569,6 @@ async function refreshStatus() {
     userStatus = await res.json();
     updateUsageBar();
     updatePlanBadge();
-    updatePdfButtons();
-    applyPlanLocks();
   } catch(e) {}
 }
 
@@ -751,17 +622,21 @@ document.getElementById('authBtn').addEventListener('click', async () => {
     } else {
       const { data, error } = await sb.auth.signUp({ email, password: pass });
       if (error) throw error;
+      // Enviar email de bienvenida siempre con el email del formulario
+      try {
+        await fetch('/api/welcome', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email, name: email.split('@')[0] })
+        });
+      } catch(e) {}
       if (data.user) {
-        // Send welcome email
-        try {
-          await fetch('/api/welcome', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: data.user.email })
-          });
-        } catch(e) {}
         await onLogin(data.user);
-      } else { errEl.textContent = 'Revisa tu email para confirmar tu cuenta.'; errEl.classList.add('visible'); }
+      } else {
+        // Supabase confirmación activa — igual el email de bienvenida ya salió
+        errEl.textContent = 'Revisa tu email para confirmar tu cuenta.';
+        errEl.classList.add('visible');
+      }
     }
   } catch(e) {
     const msgs = { 'Invalid login credentials': 'Email o contraseña incorrectos.', 'User already registered': 'Email ya registrado. Iniciá sesión.' };
@@ -805,54 +680,8 @@ document.getElementById('fbSubmit').addEventListener('click', async () => {
   if (pendingPayload) { pendingFeedback = false; doGenerate(pendingPayload); pendingPayload = null; }
 });
 
-
-// ── STEPPER ──
-let currentStep = 1;
-
-function goToStep(n) {
-  for (let i = 1; i <= 4; i++) {
-    document.getElementById('panel'+i).classList.toggle('active', i === n);
-    const circle = document.getElementById('sc'+i);
-    const label = document.getElementById('sl'+i);
-    circle.classList.remove('active','done');
-    label.classList.remove('active','done');
-    if (i < n) { circle.classList.add('done'); circle.textContent = '✓'; label.classList.add('done'); }
-    else if (i === n) { circle.classList.add('active'); circle.textContent = i; label.classList.add('active'); }
-    else { circle.textContent = i; }
-    if (i < 4) {
-      const line = document.getElementById('sline'+i);
-      if (line) line.classList.toggle('done', i < n);
-    }
-  }
-  currentStep = n;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-document.getElementById('next1').addEventListener('click', () => {
-  applyPlanLocks();
-  if (!imgBase64) {
-    const errEl = document.getElementById('errMsg');
-    // mostrar error visual en paso 1
-    const zone = document.getElementById('uploadZone');
-    zone.style.borderColor = '#E24B4A';
-    setTimeout(() => zone.style.borderColor = '', 2000);
-    return;
-  }
-  goToStep(2);
-});
-
-document.getElementById('next2').addEventListener('click', () => goToStep(3));
-document.getElementById('next3').addEventListener('click', () => goToStep(4));
-
-document.getElementById('back2').addEventListener('click', () => goToStep(1));
-document.getElementById('back3').addEventListener('click', () => goToStep(2));
-document.getElementById('back4').addEventListener('click', () => goToStep(3));
-
-// Reset btn ahora es el botón de nueva desde el resultado
-
 // ── FORMAT SWITCH ──
 function switchTipo(type) {
-  if (userStatus) applyPlanLocks();
   tipoType = type;
   ['subVideo','subFoto','subCarrusel','subStory'].forEach(id => document.getElementById(id).classList.remove('visible'));
   ({ video:'subVideo', foto:'subFoto', carrusel:'subCarrusel', story:'subStory' })[type] && document.getElementById(({ video:'subVideo', foto:'subFoto', carrusel:'subCarrusel', story:'subStory' })[type]).classList.add('visible');
@@ -929,27 +758,27 @@ function handleFile(file) {
   reader.onload = e => {
     imgBase64 = e.target.result.split(',')[1];
     const img = document.getElementById('previewImg');
-    img.src = e.target.result;
+    img.src = e.target.result; img.style.display = 'block';
     document.getElementById('uploadPrompt').style.display = 'none';
-    document.getElementById('previewWrap').style.display = 'block';
+    document.getElementById('changeWrap').style.display = 'block';
   };
   reader.readAsDataURL(file);
 }
 document.getElementById('fileInput').addEventListener('change', function() { handleFile(this.files[0]); });
-document.getElementById('changeImg').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('fileInput').click(); });
+document.getElementById('changeImg').addEventListener('click', () => document.getElementById('fileInput').click());
 const zone = document.getElementById('uploadZone');
 zone.addEventListener('dragover', e => { e.preventDefault(); zone.style.borderColor = 'var(--purple)'; });
 zone.addEventListener('dragleave', () => { zone.style.borderColor = ''; });
 zone.addEventListener('drop', e => { e.preventDefault(); zone.style.borderColor = ''; handleFile(e.dataTransfer.files[0]); });
 
 // ── RESET ──
-function resetAll() {
+document.getElementById('resetBtn').addEventListener('click', () => {
   imgBase64 = null; cantidad = 1; briefRaw = '';
   document.getElementById('previewImg').style.display = 'none';
-  document.getElementById('previewWrap').style.display = 'none';
-  document.getElementById('uploadPrompt').style.display = '';
+  document.getElementById('uploadPrompt').style.display = 'block';
+  document.getElementById('changeWrap').style.display = 'none';
   document.getElementById('cantVal').textContent = '1';
-  ['producto','publico','extras'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  ['cliente','producto','publico','extras'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('resultCard').classList.remove('visible');
   document.getElementById('errMsg').classList.remove('visible');
   document.getElementById('briefEl').innerHTML = '';
@@ -962,14 +791,14 @@ function resetAll() {
   document.querySelector('#platPills .pill').classList.add('active');
   document.querySelector('#formatoPills .pill').classList.add('active');
   switchTipo('video');
-  goToStep(1);
-}
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 
 // ── BUILD PROMPT ──
 function buildPrompt() {
   const tipo = getTipo(), subParam = getSubParam(), fin = getFin(), plat = getPlatOrFormato();
   const estilos = getEstilos();
-  const cliente = '';
+  const cliente = document.getElementById('cliente').value.trim();
   const producto = document.getElementById('producto').value.trim();
   const publico = document.getElementById('publico').value.trim();
   const extras = document.getElementById('extras').value.trim();
@@ -1226,359 +1055,82 @@ document.getElementById('copyBtn').addEventListener('click', () => {
 });
 
 // ── PDF ──
-
-
-// ── CANDADOS FREE ──
-function applyPlanLocks() {
-  const isFree = !userStatus || userStatus.plan === 'free';
-  
-  // Formatos bloqueados en Free: Carrusel, Story
-  document.querySelectorAll('#tipoPills .pill').forEach(btn => {
-    const type = btn.dataset.type;
-    if (isFree && (type === 'carrusel' || type === 'story')) {
-      btn.classList.add('locked');
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        document.getElementById('plansMsg').textContent = 'El plan Free incluye solo Reels y Fotos. Elegí un plan para acceder a todos los formatos.';
-        document.getElementById('plansOverlay').classList.remove('hidden');
-      };
-    } else {
-      btn.classList.remove('locked');
-      btn.onclick = null;
-    }
-  });
-
-  // Duraciones bloqueadas en Free: 30s, 60s
-  document.querySelectorAll('#durPills .pill').forEach(btn => {
-    const val = btn.dataset.val;
-    if (isFree && (val === '30 segundos' || val === '60 segundos')) {
-      btn.classList.add('locked');
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        document.getElementById('plansMsg').textContent = 'El plan Free incluye solo Reels de 15 segundos. Elegí un plan para acceder a más duraciones.';
-        document.getElementById('plansOverlay').classList.remove('hidden');
-      };
-    } else {
-      btn.classList.remove('locked');
-      btn.onclick = null;
-    }
-  });
-
-  // Fotos bloqueadas en Free: 5 fotos, 8 fotos
-  document.querySelectorAll('#fotoPills .pill').forEach(btn => {
-    const val = btn.dataset.val;
-    if (isFree && (val === '5 fotos' || val === '8 fotos')) {
-      btn.classList.add('locked');
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        document.getElementById('plansMsg').textContent = 'El plan Free incluye solo packs de 3 fotos. Elegí un plan para acceder a más.';
-        document.getElementById('plansOverlay').classList.remove('hidden');
-      };
-    } else {
-      btn.classList.remove('locked');
-      btn.onclick = null;
-    }
-  });
-}
-
-// ── MOSTRAR PDF MARCA SOLO PARA PREMIUM ──
-function updatePdfButtons() {
-  const isPremium = userStatus && userStatus.plan === 'premium';
-  const marcaBtn = document.getElementById('pdfMarcaBtn');
-  if (marcaBtn) marcaBtn.style.display = isPremium ? 'inline-flex' : 'none';
-}
-
-// ── PDF CREADOR (html2canvas) ──
-document.getElementById('pdfCreadorBtn').addEventListener('click', async () => {
+document.getElementById('pdfBtn').addEventListener('click', () => {
   if (!briefRaw) return;
-  const btn = document.getElementById('pdfCreadorBtn');
-  btn.textContent = '⏳ Generando...'; btn.disabled = true;
-  const html = buildPdfCreadorHTML(briefRaw);
-  const wrap = document.getElementById('pdfRenderWrap');
-  wrap.innerHTML = html;
-  await new Promise(r => setTimeout(r, 300));
-  try {
-    const canvas = await html2canvas(wrap.firstChild, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
-    const W = 210, H = 297;
-    const imgW = canvas.width, imgH = canvas.height;
-    const ratio = W / (imgW / 2 * 0.2645);
-    const pdfImgH = (imgH / 2) * 0.2645;
-    let y = 0;
-    while (y < pdfImgH) {
-      const pageH = Math.min(H, pdfImgH - y);
-      const srcY = y / 0.2645 * 2;
-      const srcH = pageH / 0.2645 * 2;
-      const pageCanvas = document.createElement('canvas');
-      pageCanvas.width = canvas.width; pageCanvas.height = srcH;
-      pageCanvas.getContext('2d').drawImage(canvas, 0, srcY, canvas.width, srcH, 0, 0, canvas.width, srcH);
-      const imgData = pageCanvas.toDataURL('image/jpeg', 0.95);
-      if (y > 0) pdf.addPage();
-      pdf.addImage(imgData, 'JPEG', 0, 0, W, pageH);
-      y += H;
-    }
-    pdf.save('brief-ugc-algrismarquez.pdf');
-  } catch(e) { console.error(e); alert('Error generando PDF. Intentá de nuevo.'); }
-  wrap.innerHTML = '';
-  btn.textContent = '⬇ PDF Creador'; btn.disabled = false;
-});
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W = 210, H = 297, mL = 18, mR = 18, cW = 174;
 
-// ── PDF MARCA MODAL ──
-document.getElementById('pdfMarcaBtn').addEventListener('click', () => {
-  document.getElementById('marcaOverlay').classList.remove('hidden');
-});
-document.getElementById('marcaCancel').addEventListener('click', () => {
-  document.getElementById('marcaOverlay').classList.add('hidden');
-});
-document.getElementById('marcaSubmit').addEventListener('click', async () => {
-  if (!briefRaw) return;
-  const nombre = document.getElementById('marcaNombre').value.trim() || 'Algris Márquez';
-  const cliente = document.getElementById('marcaCliente').value.trim() || 'la marca';
-  const fecha = document.getElementById('marcaFecha').value.trim() || new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
-  const notas = document.getElementById('marcaNotas').value.trim();
-  document.getElementById('marcaOverlay').classList.add('hidden');
-  const btn = document.getElementById('pdfMarcaBtn');
-  btn.textContent = '⏳ Generando...'; btn.disabled = true;
-  const html = buildPdfMarcaHTML(briefRaw, nombre, cliente, fecha, notas);
-  const wrap = document.getElementById('pdfRenderWrap');
-  wrap.innerHTML = html;
-  await new Promise(r => setTimeout(r, 300));
-  try {
-    const canvas = await html2canvas(wrap.firstChild, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
-    const W = 210, H = 297;
-    const pdfImgH = (canvas.height / 2) * 0.2645;
-    let y = 0;
-    while (y < pdfImgH) {
-      const pageH = Math.min(H, pdfImgH - y);
-      const srcY = y / 0.2645 * 2;
-      const srcH = pageH / 0.2645 * 2;
-      const pageCanvas = document.createElement('canvas');
-      pageCanvas.width = canvas.width; pageCanvas.height = srcH;
-      pageCanvas.getContext('2d').drawImage(canvas, 0, srcY, canvas.width, srcH, 0, 0, canvas.width, srcH);
-      const imgData = pageCanvas.toDataURL('image/jpeg', 0.95);
-      if (y > 0) pdf.addPage();
-      pdf.addImage(imgData, 'JPEG', 0, 0, W, pageH);
-      y += H;
-    }
-    pdf.save(`brief-marca-${cliente.toLowerCase().replace(/\s+/g,'-')}.pdf`);
-  } catch(e) { console.error(e); alert('Error generando PDF. Intentá de nuevo.'); }
-  wrap.innerHTML = '';
-  btn.textContent = '⬇ PDF Marca'; btn.disabled = false;
-});
-
-// ── BUILD PDF CREADOR HTML ──
-function buildPdfCreadorHTML(raw) {
-  const clean = raw.replace(/\*\*/g,'').replace(/\*/g,'');
-  const sections = parseSections(clean);
-  const fecha = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
-  const icoMap = {'ANÁLISIS':'📦','CONCEPTO':'💡','BRIEF':'🎬','TOMA':'🎬','GANCHO':'⚓','HOOK':'⚓','COPY':'📝','DIRECCI':'🎨','ARTE':'🎨','AUDIO':'🎵','CREADOR':'✅','FOTÓGRAFO':'✅','TIPS':'⭐'};
-  const isGold = k => ['GANCHO','HOOK','AUDIO','TIPS','COPY'].some(x => k.includes(x));
-
-  let sectionsHTML = '';
-  for (const {title, body, lines} of sections) {
-    const tk = title.toUpperCase();
-    const icoKey = Object.keys(icoMap).find(k => tk.includes(k)) || '';
-    const ico = icoMap[icoKey] || '✦';
-    const iconBg = isGold(tk) ? '#FAEEDA' : '#EEEDFE';
-    let bodyHTML = '';
-    if (tk.includes('CONCEPTO')) {
-      bodyHTML = `<div style="background:#F8F3FC;border-left:3px solid #6B2D8B;border-radius:0 6px 6px 0;padding:10px 14px;font-size:11px;color:#1A0A2E;line-height:1.6;font-style:italic">${lines.join(' ')}</div>`;
-    } else if (tk.includes('ANÁLISIS')) {
-      const labelMap = ['Categoría','Propuesta visual','Oportunidades para video'];
-      // Agrupar líneas por prefijo semántico
-      const analisisGroups = {};
-      const analisisOrder = [];
-      for (const line of lines) {
-        const lower = line.toLowerCase();
-        let key = null;
-        if (lower.includes('categoría') || lower.startsWith('producto') || lower.startsWith('- producto')) key = 'Categoría';
-        else if (lower.includes('propuesta visual') || lower.includes('propuesta:')) key = 'Propuesta visual';
-        else if (lower.includes('oportunidades') || lower.includes('para video')) key = 'Oportunidades para video';
-        else key = analisisOrder[analisisOrder.length-1] || 'Descripción';
-        if (!analisisGroups[key]) { analisisGroups[key] = []; analisisOrder.push(key); }
-        analisisGroups[key].push(line.replace(/^[-·]\s*/,'').replace(/^[^:]+:\s*/,'').trim());
-      }
-      bodyHTML = Object.entries(analisisGroups).map(([lbl,txts]) => `<div style="background:#FAFAF8;border:0.5px solid rgba(107,45,139,0.1);border-radius:6px;padding:8px 10px;margin-bottom:6px"><div style="font-size:8px;font-weight:700;color:#6B2D8B;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">${lbl}</div><div style="font-size:10.5px;color:#1A0A2E;line-height:1.5">${txts.join(' ')}</div></div>`).join('');
-    } else if ((tk.includes('BRIEF') && tk.includes('PIEZA')) || tk.includes('TOMA')) {
-      let pHTML = ''; let inPiece = false; let items = [];
-      const flush = (badge, tipo, its) => {
-        if (!badge) return;
-        pHTML += `<div style="background:#FAFAF8;border:0.5px solid rgba(107,45,139,0.1);border-radius:8px;padding:10px 12px;margin-bottom:8px"><div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><span style="background:#6B2D8B;color:#fff;border-radius:100px;padding:2px 10px;font-size:8px;font-weight:700">${badge}</span><span style="font-size:9px;color:#8A7A9A">${tipo}</span></div>${its.map(it=>`<div style="display:flex;align-items:flex-start;gap:6px;font-size:10px;color:#1A0A2E;line-height:1.5;padding:3px 0;border-bottom:0.5px solid rgba(107,45,139,0.06)"><span style="width:5px;height:5px;background:#C9943A;border-radius:50%;flex-shrink:0;margin-top:4px;display:inline-block"></span>${it}</div>`).join('')}</div>`;
-      };
-      let curBadge='',curTipo='',curItems=[];
-      for (const line of lines) {
-        const pm = line.match(/^—\s*[Pp]ieza\s*(\d+).*?\[([^\]]*)\]/);
-        if (pm) { flush(curBadge,curTipo,curItems); curBadge=`Pieza ${pm[1]}`; curTipo=pm[2]||''; curItems=[]; }
-        else if (curBadge) { const c=line.replace(/^[-·]\s*/,'').trim(); if(c) curItems.push(c); }
-      }
-      flush(curBadge,curTipo,curItems);
-      bodyHTML = pHTML;
-    } else if (tk.includes('GANCHO') || tk.includes('HOOK')) {
-      let n=0;
-      bodyHTML = lines.map(l=>{const c=l.replace(/^\d+[\.\)]\s*/,'').replace(/^[-·]\s*/,'').trim();if(!c)return'';n++;return`<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 10px;border:0.5px solid rgba(107,45,139,0.1);border-radius:6px;background:#fff;margin-bottom:5px"><span style="width:16px;height:16px;background:#6B2D8B;color:#fff;border-radius:50%;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${n}</span><span style="font-size:10px;color:#1A0A2E;line-height:1.5">${c}</span></div>`;}).join('');
-    } else if (tk.includes('COPY')) {
-      bodyHTML = lines.filter(l => {
-        const clean = l.replace(/^[-·✦]\s*/,'').trim();
-        return clean.length > 3; // filtrar líneas muy cortas o símbolos solos
-      }).map(l=>{
-        const tm=l.match(/\(([^)]+seg[^)]*|\d+[-–]\d+[^)]*)\)|([Oo]verlay\s*\d+)/i);
-        const time=tm?tm[0].replace(/[()]/g,''):'—';
-        const txt=l.replace(/^[-·✦]\s*/,'').replace(/\([^)]+\)\s*/,'').replace(/[Oo]verlay\s*\d+\s*[:\-]?\s*/i,'').trim();
-        if(!txt||txt.length<2) return '';
-        return `<div style="display:flex;align-items:flex-start;gap:8px;padding:5px 8px;border:0.5px solid rgba(107,45,139,0.1);border-radius:6px;margin-bottom:4px"><span style="min-width:52px;font-size:8px;color:#6B2D8B;font-weight:700;background:#EEEDFE;border-radius:100px;padding:2px 6px;text-align:center;flex-shrink:0">${time}</span><span style="font-size:10px;color:#1A0A2E;line-height:1.5">${txt}</span></div>`;
-      }).join('');
-    } else if (tk.includes('DIRECCI') || tk.includes('ARTE')) {
-      const arteMap={'paleta':'Paleta y fondos','color':'Paleta','prop':'Props','escenograf':'Escenografía','iluminaci':'Iluminación','temperatura':'Temperatura','outfit':'Outfit','presentaci':'Presentación'};
-      const cards={};
-      for (const line of lines) {
-        const lower=line.toLowerCase().replace(/^[-·]\s*/,'');
-        const key=Object.keys(arteMap).find(k=>lower.startsWith(k));
-        if (key&&!cards[key]) cards[key]={label:arteMap[key],text:line.replace(/^[-·]\s*/,'').replace(/^[^:]+:\s*/,'').trim()};
-        else if (key&&cards[key]) cards[key].text+=' '+line.replace(/^[-·]\s*/,'').replace(/^[^:]+:\s*/,'').trim();
-        else if (Object.keys(cards).length>0) { const last=Object.keys(cards).pop(); cards[last].text+=' '+line.replace(/^[-·]\s*/,''); }
-      }
-      const cardArr=Object.values(cards);
-      bodyHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${cardArr.map(c=>`<div style="background:#FAFAF8;border:0.5px solid rgba(107,45,139,0.1);border-radius:6px;padding:8px 10px"><div style="font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6B2D8B;margin-bottom:3px">${c.label}</div><div style="font-size:10px;color:#1A0A2E;line-height:1.5">${c.text}</div></div>`).join('')}</div>`;
-    } else if (tk.includes('AUDIO')) {
-      const musLines=[],altLines=[];let isMus=true;
-      for(const l of lines){
-        const low=l.toLowerCase();
-        if(low.includes('alternativa')||low.includes('opción 2')||low.includes('opcion 2')||low.includes('recomendación')||low.includes('recomendacion')) isMus=false;
-        const clean=l.replace(/^[-·]\s*/,'').replace(/^(opción\s*\d+|alternativa|recomendación)[:\s]*/i,'').trim();
-        if(clean)(isMus?musLines:altLines).push(clean);
-      }
-      const musText=musLines.join(' ');
-      const altText=altLines.join(' ');
-      bodyHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div style="background:#FAFAF8;border:0.5px solid rgba(107,45,139,0.1);border-radius:6px;padding:8px 10px;display:flex;gap:6px">
-          <span style="font-size:14px;flex-shrink:0">🎵</span>
-          <div><div style="font-size:8px;font-weight:700;color:#854F0B;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">Música</div><div style="font-size:10px;color:#1A0A2E;line-height:1.5">${musText}</div></div>
-        </div>
-        <div style="background:#FAFAF8;border:0.5px solid rgba(107,45,139,0.1);border-radius:6px;padding:8px 10px;display:flex;gap:6px">
-          <span style="font-size:14px;flex-shrink:0">🎙</span>
-          <div><div style="font-size:8px;font-weight:700;color:#854F0B;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">Sonido / Voz</div><div style="font-size:10px;color:#1A0A2E;line-height:1.5">${altText||'Audio ambiente natural y voz de la creadora como protagonista'}</div></div>
-        </div>
-      </div>`;
-    } else if (tk.includes('CREADOR') || tk.includes('FOTÓGRAFO')) {
-      bodyHTML=lines.map(l=>{const c=l.replace(/^[-·•]\s*/,'').trim();if(!c)return'';return`<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 10px;background:#FAFAF8;border:0.5px solid rgba(107,45,139,0.08);border-radius:6px;margin-bottom:4px"><div style="width:14px;height:14px;background:#E1F5EE;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#0F6E56;font-size:9px;margin-top:1px">✓</div><div style="font-size:10px;color:#1A0A2E;line-height:1.5">${c}</div></div>`;}).join('');
-    } else if (tk.includes('TIPS')) {
-      const tipLines=lines.map(l=>l.replace(/^[-·•]\s*/,'').trim()).filter(Boolean);
-      const mid=Math.ceil(tipLines.length/2);
-      const t1=tipLines.slice(0,mid).join(' '), t2=tipLines.slice(mid).join(' ');
-      bodyHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="border-left:2px solid #C9943A;background:rgba(250,238,218,0.3);border-radius:0 6px 6px 0;padding:8px 10px"><div style="font-size:8px;font-weight:700;color:#854F0B;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px">Tip 1</div><div style="font-size:10px;color:#5F5E5A;line-height:1.5">${t1}</div></div><div style="border-left:2px solid #C9943A;background:rgba(250,238,218,0.3);border-radius:0 6px 6px 0;padding:8px 10px"><div style="font-size:8px;font-weight:700;color:#854F0B;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px">Tip 2</div><div style="font-size:10px;color:#5F5E5A;line-height:1.5">${t2||t1}</div></div></div>`;
+  function header(first) {
+    doc.setFillColor(74,26,98); doc.rect(0,0,W,first?44:10,'F');
+    doc.setFillColor(201,148,58); doc.rect(0,first?44:10,W,1.5,'F');
+    if (first) {
+      doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(19);
+      doc.text('ALGRIS MÁRQUEZ', mL, 20);
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(200,170,220);
+      doc.text('UGC CONSULTING', mL, 27);
+      doc.setTextColor(201,148,58); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+      doc.text('BRIEF CREATIVO UGC', W-mR, 20, {align:'right'});
+      const cl = document.getElementById('cliente').value.trim();
+      if (cl) { doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(200,170,220); doc.text(`Para: ${cl}`, W-mR, 28, {align:'right'}); }
+      doc.setTextColor(200,170,220); doc.setFontSize(7.5);
+      doc.text(new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'}), W-mR, 36, {align:'right'});
     } else {
-      bodyHTML=lines.map(l=>`<div style="font-size:10.5px;color:#1A0A2E;line-height:1.6;margin-bottom:4px">${l.replace(/^[-·]\s*/,'')}</div>`).join('');
+      doc.setTextColor(200,170,220); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+      doc.text('ALGRIS MÁRQUEZ · UGC Consulting', mL, 7);
     }
-    sectionsHTML += `<div style="margin-bottom:16px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <div style="width:24px;height:24px;border-radius:6px;background:${iconBg};display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0">${ico}</div>
-        <span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#6B2D8B">${title}</span>
-      </div>
-      <div style="height:0.5px;background:rgba(107,45,139,0.12);margin-bottom:8px"></div>
-      ${bodyHTML}
-    </div>`;
   }
 
-  return `<div style="width:794px;background:#fff;font-family:'Helvetica Neue',Arial,sans-serif">
-    <div style="background:#1C1C1E;padding:20px 40px 0">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:14px">
-        <div><div style="color:#fff;font-size:16px;font-weight:700">Algris Márquez</div><div style="color:rgba(255,255,255,0.4);font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-top:2px">UGC Consulting</div></div>
-        <div style="text-align:right"><div style="font-size:8px;letter-spacing:1.5px;color:rgba(201,148,58,0.8);text-transform:uppercase">Brief creativo UGC</div><div style="font-size:11px;color:rgba(255,255,255,0.85);font-weight:600">${fecha}</div></div>
-      </div>
-    </div>
-    <div style="height:3px;background:linear-gradient(90deg,#C9943A,#E8B84B,#C9943A)"></div>
-    <div style="padding:24px 40px">${sectionsHTML}</div>
-    <div style="background:#1C1C1E;padding:10px 40px;display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:8px;color:rgba(255,255,255,0.3)">Generado por Algris Márquez · UGC Consulting · © 2025 algrismarquez.com</span>
-      <span style="font-size:8px;color:rgba(201,148,58,0.8);font-weight:600">✦ Brief creativo UGC</span>
-    </div>
-  </div>`;
-}
-
-// ── BUILD PDF MARCA HTML ──
-function buildPdfMarcaHTML(raw, nombre, cliente, fecha, notas) {
-  const clean = raw.replace(/\*\*/g,'').replace(/\*/g,'');
-  const sections = parseSections(clean);
-  const concepto = sections.find(s=>s.title.toUpperCase().includes('CONCEPTO'));
-  const ganchos = sections.find(s=>s.title.toUpperCase().includes('GANCHO')||s.title.toUpperCase().includes('HOOK'));
-  const arte = sections.find(s=>s.title.toUpperCase().includes('DIRECCI')||s.title.toUpperCase().includes('ARTE'));
-  const tipo = sections.find(s=>s.title.toUpperCase().includes('BRIEF')&&s.title.toUpperCase().includes('PIEZA'));
-  const formatoText = tipo ? tipo.lines[0]||'' : '';
-  const plataforma = 'Instagram · TikTok';
-  const topGanchos = (ganchos?.lines||[]).filter(l=>l.trim()).slice(0,3);
-  const arteMap={'paleta':'Paleta y fondos','color':'Paleta','prop':'Props','escenograf':'Escenografía','iluminaci':'Iluminación','temperatura':'Temperatura','outfit':'Outfit','presentaci':'Presentación'};
-  const arteCards={};
-  if (arte) for (const line of arte.lines) {
-    const lower=line.toLowerCase().replace(/^[-·]\s*/,'');
-    const key=Object.keys(arteMap).find(k=>lower.startsWith(k));
-    if(key&&!arteCards[key]) arteCards[key]={label:arteMap[key],text:line.replace(/^[-·]\s*/,'').replace(/^[^:]+:\s*/,'').trim()};
-    else if(key&&arteCards[key]) arteCards[key].text+=' '+line.replace(/^[-·]\s*/,'').replace(/^[^:]+:\s*/,'').trim();
+  function footer() {
+    doc.setFillColor(247,245,240); doc.rect(0,H-12,W,12,'F');
+    doc.setFillColor(201,148,58); doc.rect(0,H-12,W,0.8,'F');
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(107,107,128);
+    doc.text('Generado por Algris Márquez · UGC Consulting · © 2025', mL, H-5);
+    doc.setTextColor(107,45,139); doc.text('algrismarquez.com', W-mR, H-5, {align:'right'});
   }
-  const arteArr=Object.values(arteCards).slice(0,4);
 
-  return `<div style="width:794px;background:#fff;font-family:'Helvetica Neue',Arial,sans-serif">
-    <div style="background:#1C1C1E;padding:20px 40px 0">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px">
-        <div><div style="color:#fff;font-size:16px;font-weight:700">${nombre}</div><div style="color:rgba(255,255,255,0.4);font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-top:2px">Creadora UGC · Propuesta de contenido</div></div>
-        <div style="text-align:right"><div style="font-size:8px;letter-spacing:1.5px;color:rgba(201,148,58,0.8);text-transform:uppercase">Fecha de entrega</div><div style="font-size:11px;color:rgba(255,255,255,0.85);font-weight:600">${fecha}</div></div>
-      </div>
-      <div style="height:0.5px;background:rgba(255,255,255,0.08);margin-bottom:12px"></div>
-      <div style="display:flex;gap:32px;padding-bottom:16px;flex-wrap:wrap">
-        <div><div style="font-size:8px;letter-spacing:1.5px;color:rgba(201,148,58,0.7);text-transform:uppercase">Propuesta para</div><div style="font-size:11px;color:#fff;font-weight:600">${cliente}</div></div>
-        <div><div style="font-size:8px;letter-spacing:1.5px;color:rgba(201,148,58,0.7);text-transform:uppercase">Plataforma</div><div style="font-size:11px;color:#fff;font-weight:600">${plataforma}</div></div>
-      </div>
-    </div>
-    <div style="height:3px;background:linear-gradient(90deg,#C9943A,#E8B84B,#C9943A)"></div>
-    <div style="padding:24px 40px;display:flex;flex-direction:column;gap:16px">
-      <div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="width:24px;height:24px;border-radius:6px;background:#F1EFE8;display:flex;align-items:center;justify-content:center;font-size:12px">💡</div><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#444441">Concepto creativo</span></div>
-        <div style="height:0.5px;background:rgba(0,0,0,0.08);margin-bottom:8px"></div>
-        <div style="background:#F5F5F5;border-left:2px solid #2C2C2A;border-radius:0 6px 6px 0;padding:10px 14px;font-size:11px;color:#1C1C1E;line-height:1.6;font-style:italic">${concepto?.lines.join(' ')||''}</div>
-      </div>
-      <div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="width:24px;height:24px;border-radius:6px;background:#F1EFE8;display:flex;align-items:center;justify-content:center;font-size:12px">🎯</div><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#444441">Objetivos del contenido</span></div>
-        <div style="height:0.5px;background:rgba(0,0,0,0.08);margin-bottom:8px"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-          <div style="background:#F5F5F5;border-radius:6px;padding:10px;text-align:center"><div style="font-size:16px;margin-bottom:4px">📡</div><div style="font-size:9px;font-weight:700;color:#1C1C1E">Alcance</div><div style="font-size:9px;color:#5F5E5A;line-height:1.4;margin-top:2px">Posicionar el producto como solución relevante para la audiencia</div></div>
-          <div style="background:#F5F5F5;border-radius:6px;padding:10px;text-align:center"><div style="font-size:16px;margin-bottom:4px">❤️</div><div style="font-size:9px;font-weight:700;color:#1C1C1E">Confianza</div><div style="font-size:9px;color:#5F5E5A;line-height:1.4;margin-top:2px">Demostrar el beneficio con experiencia real y auténtica</div></div>
-          <div style="background:#F5F5F5;border-radius:6px;padding:10px;text-align:center"><div style="font-size:16px;margin-bottom:4px">🛒</div><div style="font-size:9px;font-weight:700;color:#1C1C1E">Conversión</div><div style="font-size:9px;color:#5F5E5A;line-height:1.4;margin-top:2px">Dirigir al link de compra con CTA natural al cierre</div></div>
-        </div>
-      </div>
-      <div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="width:24px;height:24px;border-radius:6px;background:#FAEEDA;display:flex;align-items:center;justify-content:center;font-size:12px">⚓</div><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#444441">Opciones de apertura</span></div>
-        <div style="height:0.5px;background:rgba(0,0,0,0.08);margin-bottom:8px"></div>
-        ${topGanchos.map(l=>`<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 10px;border:0.5px solid rgba(0,0,0,0.08);border-radius:6px;background:#fff;margin-bottom:4px"><span style="width:5px;height:5px;background:#C9943A;border-radius:50%;flex-shrink:0;margin-top:4px;display:inline-block"></span><span style="font-size:10px;color:#1C1C1E;line-height:1.5">${l.replace(/^\d+[\.\)]\s*/,'').replace(/^[-·]\s*/,'').trim()}</span></div>`).join('')}
-      </div>
-      <div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="width:24px;height:24px;border-radius:6px;background:#F1EFE8;display:flex;align-items:center;justify-content:center;font-size:12px">🎨</div><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#444441">Dirección visual</span></div>
-        <div style="height:0.5px;background:rgba(0,0,0,0.08);margin-bottom:8px"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${arteArr.map(c=>`<div style="background:#F5F5F5;border-radius:6px;padding:8px 10px"><div style="font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#444441;margin-bottom:3px">${c.label}</div><div style="font-size:10px;color:#1C1C1E;line-height:1.5">${c.text}</div></div>`).join('')}</div>
-      </div>
-      ${notas?`<div><div style="background:rgba(250,238,218,0.5);border:0.5px solid rgba(201,148,58,0.25);border-radius:6px;padding:12px 14px"><div style="font-size:8px;font-weight:700;color:#854F0B;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">💬 Notas para la marca</div><div style="font-size:10px;color:#1C1C1E;line-height:1.6">${notas}</div></div></div>`:''}
-    </div>
-    <div style="background:#1C1C1E;padding:10px 40px;display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:8px;color:rgba(255,255,255,0.3)">Generado con UGC Studio · algrismarquez.com</span>
-      <span style="font-size:8px;color:rgba(201,148,58,0.8);font-weight:600">✦ Propuesta de contenido UGC</span>
-    </div>
-  </div>`;
-}
-
-// ── PARSER DE SECCIONES ──
-function parseSections(clean) {
+  header(true);
+  let y = 52;
+  const clean = briefRaw.replace(/\*\*/g,'').replace(/\*/g,'');
   const rx = /✦\s*([^\n]+)\n([\s\S]*?)(?=✦|$)/g;
-  const result = []; let m;
+  let m;
+
   while ((m = rx.exec(clean)) !== null) {
     const title = m[1].trim();
-    const body = m[2].trim();
-    const lines = body.split('\n').filter(l=>l.trim());
-    result.push({title, body, lines});
-  }
-  return result;
-}
+    const lines = m[2].trim().split('\n').filter(l => l.trim());
+    if (y > H-50) { footer(); doc.addPage(); header(false); y=18; }
+    y+=3;
+    doc.setFillColor(243,234,247); doc.roundedRect(mL-2,y-5,cW+4,9,2,2,'F');
+    doc.setFillColor(107,45,139); doc.roundedRect(mL-2,y-5,3,9,1,1,'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(74,26,98);
+    doc.text(title, mL+4, y); y+=9; doc.setTextColor(26,26,46);
 
+    for (const line of lines) {
+      if (y > H-22) { footer(); doc.addPage(); header(false); y=18; doc.setTextColor(26,26,46); }
+      const isPiece = /^—\s*[Pp]ieza|^—\s*[Tt]oma/.test(line);
+      const isBullet = /^[-·•]/.test(line.trim());
+      const isNum = /^\d+[\.\)]/.test(line.trim());
+      if (isPiece) {
+        y+=2; doc.setFillColor(247,245,240); doc.roundedRect(mL,y-4,cW,7,1,1,'F');
+        doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(107,45,139);
+        doc.text(line.replace(/^—\s*/,'').toUpperCase(), mL+3, y); y+=7; doc.setTextColor(26,26,46);
+      } else if (isBullet || isNum) {
+        doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
+        doc.setTextColor(107,45,139); doc.text('•', mL+2, y); doc.setTextColor(26,26,46);
+        const w = doc.splitTextToSize(line.replace(/^[-·•]\s*/,'').replace(/^\d+[\.\)]\s*/,''), cW-10);
+        doc.text(w, mL+8, y); y+=w.length*4.8+1;
+      } else {
+        doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
+        const w = doc.splitTextToSize(line, cW);
+        doc.text(w, mL, y); y+=w.length*4.8+1;
+      }
+    }
+    y+=5;
+  }
+  footer();
+  const cl = document.getElementById('cliente').value.trim();
+  doc.save(cl ? `brief-${cl.toLowerCase().replace(/\s+/g,'-')}.pdf` : 'brief-ugc-algrismarquez.pdf');
+});
 </script>
 </body>
 </html>
