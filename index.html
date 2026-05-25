@@ -85,6 +85,8 @@ body{font-family:var(--font-sans);color:var(--text);background:var(--cream);min-
 .pill{padding:7px 15px;border-radius:100px;border:1px solid rgba(107,45,139,0.12);background:#fff;font-size:12.5px;cursor:pointer;transition:all 0.18s;font-family:var(--font-sans);color:var(--text);box-shadow:0 1px 4px rgba(107,45,139,0.04)}
 .pill:hover{border-color:var(--purple);color:var(--purple)}
 .pill.active,.pill.multi-active{background:var(--grad-purple);color:#fff;border-color:transparent;box-shadow:0 3px 12px rgba(107,45,139,0.25)}
+.pill.locked{color:#aaa;border-color:rgba(0,0,0,0.08);background:#f5f5f5;cursor:not-allowed;opacity:0.75}
+.pill.locked:hover{border-color:rgba(0,0,0,0.08);color:#aaa}
 .counter-row{display:flex;align-items:center;gap:14px;margin-top:2px}
 .counter-btn{width:32px;height:32px;border-radius:50%;border:1px solid rgba(107,45,139,0.15);background:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.18s;color:var(--purple);box-shadow:var(--shadow-sm)}
 .counter-btn:hover{background:var(--grad-purple);color:#fff;border-color:transparent}
@@ -123,6 +125,8 @@ input::placeholder{color:var(--muted)}
 .copy-btn:hover{background:var(--gold);color:#fff}
 .pdf-btn{border:1px solid rgba(107,45,139,0.2);background:rgba(107,45,139,0.06);color:var(--purple)}
 .pdf-btn:hover{background:var(--grad-purple);color:#fff}
+.pdf-marca-btn{border:1px solid rgba(201,148,58,0.3);background:rgba(201,148,58,0.08);color:var(--gold)}
+.pdf-marca-btn:hover{background:var(--grad-gold);color:var(--navy)}
 .result-body{padding:22px 20px}
 
 /* BRIEF RENDERED */
@@ -362,25 +366,25 @@ input::placeholder{color:var(--muted)}
             <span class="param-label">Formato</span>
             <div class="pills" id="tipoPills">
               <button class="pill active" data-val="Reel / Video corto" data-type="video">⚡ Reel</button>
-              <button class="pill" data-val="Fotos estáticas" data-type="foto">📷 Fotos</button>
-              <button class="pill" data-val="Carrusel" data-type="carrusel">🎠 Carrusel</button>
-              <button class="pill" data-val="Story" data-type="story">📱 Story</button>
+              <button class="pill" data-val="Fotos estáticas" data-type="foto" data-plan="paid">📷 Fotos 🔒</button>
+              <button class="pill" data-val="Carrusel" data-type="carrusel" data-plan="paid">🎠 Carrusel 🔒</button>
+              <button class="pill" data-val="Story" data-type="story" data-plan="paid">📱 Story 🔒</button>
             </div>
           </div>
           <div class="full subparam visible" id="subVideo">
             <span class="param-label">Duración</span>
             <div class="pills" id="durPills">
               <button class="pill active" data-val="15 segundos">15s</button>
-              <button class="pill" data-val="30 segundos">30s</button>
-              <button class="pill" data-val="60 segundos">60s</button>
+              <button class="pill" data-val="30 segundos" data-plan="paid">30s 🔒</button>
+              <button class="pill" data-val="60 segundos" data-plan="paid">60s 🔒</button>
             </div>
           </div>
           <div class="full subparam" id="subFoto">
             <span class="param-label">Cantidad de fotos</span>
             <div class="pills" id="fotoPills">
-              <button class="pill active" data-val="3 fotos">3 fotos</button>
-              <button class="pill" data-val="5 fotos">5 fotos</button>
-              <button class="pill" data-val="8 fotos">8 fotos</button>
+              <button class="pill active" data-val="3 fotos" data-plan="paid">3 fotos 🔒</button>
+              <button class="pill" data-val="5 fotos" data-plan="paid">5 fotos 🔒</button>
+              <button class="pill" data-val="8 fotos" data-plan="paid">8 fotos 🔒</button>
             </div>
           </div>
           <div class="full subparam" id="subCarrusel">
@@ -480,6 +484,7 @@ input::placeholder{color:var(--muted)}
       <div class="result-actions">
         <button class="action-btn copy-btn" id="copyBtn">Copiar</button>
         <button class="action-btn pdf-btn" id="pdfBtn">⬇ PDF</button>
+        <button class="action-btn pdf-btn" id="pdfMarcaBtn" title="Solo plan Premium">⬇ PDF Marca 🔒</button>
       </div>
     </div>
     <div class="result-body">
@@ -593,6 +598,38 @@ function updatePlanBadge() {
   if (plan === 'premium') { badge.textContent = '✦ Premium'; badge.classList.add('plan-premium'); }
   else if (plan === 'inicial') { badge.textContent = '✦ Inicial'; badge.classList.add('plan-inicial'); }
   else badge.textContent = '✦ Free';
+  // PDF Marca: siempre visible, solo funcional en Premium
+  const pdfMarcaBtn = document.getElementById('pdfMarcaBtn');
+  if (pdfMarcaBtn) {
+    if (plan === 'premium') {
+      pdfMarcaBtn.textContent = '⬇ PDF Marca';
+      pdfMarcaBtn.disabled = false;
+      pdfMarcaBtn.classList.remove('locked');
+      pdfMarcaBtn.title = 'Descargar PDF para la marca';
+    } else {
+      pdfMarcaBtn.textContent = '⬇ PDF Marca 🔒';
+      pdfMarcaBtn.disabled = true;
+      pdfMarcaBtn.classList.add('locked');
+      pdfMarcaBtn.title = 'Disponible solo en plan Premium';
+    }
+  }
+  // Aplicar candados según plan
+  applyFreeLocks(plan);
+}
+
+function applyFreeLocks(plan) {
+  const isFree = plan === 'free';
+  document.querySelectorAll('[data-plan="paid"]').forEach(btn => {
+    if (isFree) {
+      btn.classList.add('locked');
+      btn.disabled = true;
+    } else {
+      btn.classList.remove('locked');
+      btn.disabled = false;
+      // Quitar el 🔒 del texto si ya tiene plan
+      btn.textContent = btn.textContent.replace(' 🔒', '').trim();
+    }
+  });
 }
 
 // ── AUTH FORM ──
@@ -622,21 +659,17 @@ document.getElementById('authBtn').addEventListener('click', async () => {
     } else {
       const { data, error } = await sb.auth.signUp({ email, password: pass });
       if (error) throw error;
-      // Enviar email de bienvenida siempre con el email del formulario
-      try {
-        await fetch('/api/welcome', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: email, name: email.split('@')[0] })
-        });
-      } catch(e) {}
       if (data.user) {
+        // Send welcome email
+        try {
+          await fetch('/api/welcome', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: data.user.email })
+          });
+        } catch(e) {}
         await onLogin(data.user);
-      } else {
-        // Supabase confirmación activa — igual el email de bienvenida ya salió
-        errEl.textContent = 'Revisa tu email para confirmar tu cuenta.';
-        errEl.classList.add('visible');
-      }
+      } else { errEl.textContent = 'Revisa tu email para confirmar tu cuenta.'; errEl.classList.add('visible'); }
     }
   } catch(e) {
     const msgs = { 'Invalid login credentials': 'Email o contraseña incorrectos.', 'User already registered': 'Email ya registrado. Iniciá sesión.' };
@@ -1055,38 +1088,73 @@ document.getElementById('copyBtn').addEventListener('click', () => {
 });
 
 // ── PDF ──
-document.getElementById('pdfBtn').addEventListener('click', () => {
-  if (!briefRaw) return;
+// ── HELPER PDF ──
+function buildPDF(briefRaw, nombreProducto, nombreCreador, esMarca=false) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const W = 210, H = 297, mL = 18, mR = 18, cW = 174;
+  const nombreMarca = (document.getElementById('cliente')?.value || '').trim();
+
+  function checkPage(needed) {
+    if (y + needed > H - 18) { footer(); doc.addPage(); header(false); y = 18; }
+  }
 
   function header(first) {
-    doc.setFillColor(74,26,98); doc.rect(0,0,W,first?44:10,'F');
-    doc.setFillColor(201,148,58); doc.rect(0,first?44:10,W,1.5,'F');
-    if (first) {
-      doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(19);
-      doc.text('ALGRIS MÁRQUEZ', mL, 20);
-      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(200,170,220);
-      doc.text('UGC CONSULTING', mL, 27);
-      doc.setTextColor(201,148,58); doc.setFont('helvetica','bold'); doc.setFontSize(10);
-      doc.text('BRIEF CREATIVO UGC', W-mR, 20, {align:'right'});
-      const cl = document.getElementById('cliente').value.trim();
-      if (cl) { doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(200,170,220); doc.text(`Para: ${cl}`, W-mR, 28, {align:'right'}); }
-      doc.setTextColor(200,170,220); doc.setFontSize(7.5);
-      doc.text(new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'}), W-mR, 36, {align:'right'});
+    if (esMarca) {
+      // Header negro para PDF Marca
+      doc.setFillColor(26,26,26); doc.rect(0,0,W,first?44:10,'F');
+      doc.setFillColor(201,148,58); doc.rect(0,first?44:10,W,1.5,'F');
+      if (first) {
+        doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(17);
+        doc.text(nombreProducto || 'Producto', mL, 20);
+        doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(150,150,150);
+        doc.text(nombreMarca || '', mL, 28);
+        doc.setTextColor(201,148,58); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+        doc.text('BRIEF CREATIVO · MARCA', W-mR, 20, {align:'right'});
+        if (nombreCreador) { doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(150,150,150); doc.text(`Creador/a: ${nombreCreador}`, W-mR, 28, {align:'right'}); }
+        doc.setFontSize(7.5); doc.text(new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'}), W-mR, 35, {align:'right'});
+      } else {
+        doc.setTextColor(150,150,150); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+        doc.text((nombreProducto || '') + (nombreMarca ? ' · ' + nombreMarca : ''), mL, 7);
+        doc.text('Brief Creativo · Marca', W-mR, 7, {align:'right'});
+      }
     } else {
-      doc.setTextColor(200,170,220); doc.setFont('helvetica','normal'); doc.setFontSize(7);
-      doc.text('ALGRIS MÁRQUEZ · UGC Consulting', mL, 7);
+      // Header púrpura para PDF Creador
+      doc.setFillColor(74,26,98); doc.rect(0,0,W,first?44:10,'F');
+      doc.setFillColor(201,148,58); doc.rect(0,first?44:10,W,1.5,'F');
+      if (first) {
+        doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(19);
+        doc.text('ALGRIS MÁRQUEZ', mL, 20);
+        doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(200,170,220);
+        doc.text('UGC CONSULTING', mL, 27);
+        doc.setTextColor(201,148,58); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+        doc.text('BRIEF CREATIVO UGC', W-mR, 20, {align:'right'});
+        if (nombreCreador) { doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(200,170,220); doc.text(`Creador/a: ${nombreCreador}`, W-mR, 28, {align:'right'}); }
+        if (nombreProducto) { doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(200,170,220); doc.text(`Producto: ${nombreProducto}`, W-mR, 35, {align:'right'}); }
+        doc.setTextColor(200,170,220); doc.setFontSize(7.5);
+        doc.text(new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'}), mL, 36);
+      } else {
+        doc.setTextColor(200,170,220); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+        doc.text('ALGRIS MÁRQUEZ · UGC Consulting', mL, 7);
+        if (nombreProducto) doc.text(`Producto: ${nombreProducto}`, W-mR, 7, {align:'right'});
+      }
     }
   }
 
   function footer() {
-    doc.setFillColor(247,245,240); doc.rect(0,H-12,W,12,'F');
-    doc.setFillColor(201,148,58); doc.rect(0,H-12,W,0.8,'F');
-    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(107,107,128);
-    doc.text('Generado por Algris Márquez · UGC Consulting · © 2025', mL, H-5);
-    doc.setTextColor(107,45,139); doc.text('algrismarquez.com', W-mR, H-5, {align:'right'});
+    if (esMarca) {
+      doc.setFillColor(242,242,242); doc.rect(0,H-12,W,12,'F');
+      doc.setFillColor(201,148,58); doc.rect(0,H-12,W,0.8,'F');
+      doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(120,120,120);
+      doc.text((nombreProducto||'') + (nombreMarca ? ' · ' + nombreMarca : '') + ' · © 2025', mL, H-5);
+      doc.setTextColor(201,148,58); doc.text('Brief creativo · Marca', W-mR, H-5, {align:'right'});
+    } else {
+      doc.setFillColor(247,245,240); doc.rect(0,H-12,W,12,'F');
+      doc.setFillColor(201,148,58); doc.rect(0,H-12,W,0.8,'F');
+      doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(107,107,128);
+      doc.text('Generado por Algris Márquez · UGC Consulting · © 2025', mL, H-5);
+      doc.setTextColor(107,45,139); doc.text('algrismarquez.com', W-mR, H-5, {align:'right'});
+    }
   }
 
   header(true);
@@ -1097,39 +1165,69 @@ document.getElementById('pdfBtn').addEventListener('click', () => {
 
   while ((m = rx.exec(clean)) !== null) {
     const title = m[1].trim();
+    if (!title) continue; // saltar secciones vacías (evita la estrella sola)
     const lines = m[2].trim().split('\n').filter(l => l.trim());
-    if (y > H-50) { footer(); doc.addPage(); header(false); y=18; }
-    y+=3;
+    checkPage(16);
+    y += 3;
     doc.setFillColor(243,234,247); doc.roundedRect(mL-2,y-5,cW+4,9,2,2,'F');
     doc.setFillColor(107,45,139); doc.roundedRect(mL-2,y-5,3,9,1,1,'F');
     doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(74,26,98);
-    doc.text(title, mL+4, y); y+=9; doc.setTextColor(26,26,46);
+    doc.text(title, mL+4, y); y += 9; doc.setTextColor(26,26,46);
 
     for (const line of lines) {
-      if (y > H-22) { footer(); doc.addPage(); header(false); y=18; doc.setTextColor(26,26,46); }
       const isPiece = /^—\s*[Pp]ieza|^—\s*[Tt]oma/.test(line);
       const isBullet = /^[-·•]/.test(line.trim());
       const isNum = /^\d+[\.\)]/.test(line.trim());
       if (isPiece) {
-        y+=2; doc.setFillColor(247,245,240); doc.roundedRect(mL,y-4,cW,7,1,1,'F');
+        checkPage(12);
+        y += 2;
+        doc.setFillColor(247,245,240); doc.roundedRect(mL,y-4,cW,7,1,1,'F');
         doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(107,45,139);
-        doc.text(line.replace(/^—\s*/,'').toUpperCase(), mL+3, y); y+=7; doc.setTextColor(26,26,46);
+        doc.text(line.replace(/^—\s*/,'').toUpperCase(), mL+3, y); y += 7; doc.setTextColor(26,26,46);
       } else if (isBullet || isNum) {
         doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
-        doc.setTextColor(107,45,139); doc.text('•', mL+2, y); doc.setTextColor(26,26,46);
         const w = doc.splitTextToSize(line.replace(/^[-·•]\s*/,'').replace(/^\d+[\.\)]\s*/,''), cW-10);
-        doc.text(w, mL+8, y); y+=w.length*4.8+1;
+        checkPage(w.length * 4.8 + 2);
+        doc.setTextColor(107,45,139); doc.text('•', mL+2, y); doc.setTextColor(26,26,46);
+        doc.text(w, mL+8, y); y += w.length * 4.8 + 1;
       } else {
         doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
         const w = doc.splitTextToSize(line, cW);
-        doc.text(w, mL, y); y+=w.length*4.8+1;
+        checkPage(w.length * 4.8 + 2);
+        doc.text(w, mL, y); y += w.length * 4.8 + 1;
       }
     }
-    y+=5;
+    y += 5;
   }
   footer();
-  const cl = document.getElementById('cliente').value.trim();
-  doc.save(cl ? `brief-${cl.toLowerCase().replace(/\s+/g,'-')}.pdf` : 'brief-ugc-algrismarquez.pdf');
+
+  // Nombre del archivo: brief-producto-creador.pdf
+  const slugProducto = (nombreProducto || 'producto').toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+  const slugCreador  = (nombreCreador  || 'creador' ).toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+  if (esMarca) {
+    const slugMarca = (nombreMarca).toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'') || 'marca';
+    doc.save(`brief-${slugProducto}-${slugMarca}.pdf`);
+  } else {
+    doc.save(`brief-${slugProducto}-${slugCreador}.pdf`);
+  }
+}
+
+document.getElementById('pdfBtn').addEventListener('click', () => {
+  if (!briefRaw) return;
+  const producto  = (document.getElementById('producto')?.value  || '').trim();
+  const creador   = (document.getElementById('cliente')?.value   || '').trim();
+  buildPDF(briefRaw, producto, creador);
+});
+
+document.getElementById('pdfMarcaBtn').addEventListener('click', () => {
+  if (!briefRaw) return;
+  if (!userStatus || userStatus.plan !== 'premium') {
+    alert('El PDF para marca está disponible solo en el plan Premium. ¡Actualiza tu plan para acceder!');
+    return;
+  }
+  const producto = (document.getElementById('producto')?.value || '').trim();
+  const creador  = (document.getElementById('cliente')?.value  || '').trim();
+  buildPDF(briefRaw, producto, creador, true);
 });
 </script>
 </body>
